@@ -7,7 +7,7 @@
 
   <Targets>
     <Target>
-      <TargetName>LiteSilverware</TargetName>
+      <TargetName>NFE_Silverware</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
       <pCCUsed>5060750::V5.06 update 6 (build 750)::ARMCC</pCCUsed>
@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>LiteSilverware</OutputName>
+          <OutputName>nfe_silverware</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -184,6 +184,7 @@
             <hadXRAM>0</hadXRAM>
             <uocXRam>0</uocXRam>
             <RvdsVP>0</RvdsVP>
+            <RvdsMve>0</RvdsMve>
             <hadIRAM2>0</hadIRAM2>
             <hadIROM2>0</hadIROM2>
             <StupSel>8</StupSel>
@@ -626,14 +627,34 @@
               <FilePath>.\src\serial_4way_avrootloader.c</FilePath>
             </File>
             <File>
-              <FileName>menu.c</FileName>
+              <FileName>osd.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\src\menu.c</FilePath>
+              <FilePath>.\src\osd.c</FilePath>
+            </File>
+            <File>
+              <FileName>osd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\osd.h</FilePath>
+            </File>
+            <File>
+              <FileName>IIR_filter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\IIR_filter.c</FilePath>
+            </File>
+            <File>
+              <FileName>IIR_filter.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\IIR_filter.h</FilePath>
             </File>
             <File>
               <FileName>rx_sbus_dsmx_bayang_switch.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\rx_sbus_dsmx_bayang_switch.c</FilePath>
+            </File>
+            <File>
+              <FileName>rx_sbus_dsmx_bayang_switch.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\rx_sbus_dsmx_bayang_switch.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -744,6 +765,11 @@
               <FileName>drv_osd.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\drv_osd.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_osd.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\drv_osd.h</FilePath>
             </File>
           </Files>
         </Group>

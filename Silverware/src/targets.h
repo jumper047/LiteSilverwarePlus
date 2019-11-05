@@ -76,9 +76,7 @@
 #ifdef Lite_Brushless
 #define BRUSHLESS_TARGET
 #define Lite_OSD
-#ifdef Lite_OSD
-#define OSD_FPS 10
-#endif
+
 //LEDS
 #define LED_NUMBER 1
 #define LED1PIN GPIO_Pin_1
