@@ -87,9 +87,9 @@ extern int rx_bind_enable;
  // save radio bind info  
     if ( rx_bind_enable )
     {
-    writeword(50, rxaddress[4]|telemetry_enabled<<8);
-    writeword(51, rxaddress[0]|(rxaddress[1]<<8)|(rxaddress[2]<<16)|(rxaddress[3]<<24));
-    writeword(52, rfchannel[0]|(rfchannel[1]<<8)|(rfchannel[2]<<16)|(rfchannel[3]<<24));
+        writeword(50, rxaddress[4]|telemetry_enabled<<8);
+        writeword(51, rxaddress[0]|(rxaddress[1]<<8)|(rxaddress[2]<<16)|(rxaddress[3]<<24));
+        writeword(52, rfchannel[0]|(rfchannel[1]<<8)|(rfchannel[2]<<16)|(rfchannel[3]<<24));
     }
     else
     {
@@ -245,7 +245,7 @@ extern int rx_bind_enable;
      
  // save radio bind info   
 
-    int temp = fmc_read(52);
+    int temp= fmc_read(52);
     int error = 0;
     for ( int i = 0 ; i < 4; i++)
     {

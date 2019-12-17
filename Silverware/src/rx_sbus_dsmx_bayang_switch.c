@@ -59,11 +59,11 @@ extern char auxchange[AUXNUMBER];
 float dsm2_scalefactor = (0.29354210f/DSM_SCALE_PERCENT);
 float dsmx_scalefactor = (0.14662756f/DSM_SCALE_PERCENT);
 
-int failsafe = 0;
-int rxmode = 0;
-int rx_ready = 0;
-int bind_safety = 0;
-int rx_bind_enable = 0;
+extern int failsafe;
+extern int rxmode;
+extern int rx_ready ;
+extern int bind_safety;
+extern int rx_bind_enable;
 int sbus_dsmx_flag = 0;     
 
 // internal dsm variables
@@ -163,7 +163,7 @@ int stat_frames_second;
 int stat_overflow;
 
 
-
+#if 0
 
 // compatibility with older version hardware.h
 #if ( !defined RADIO_XN297 && !defined RADIO_XN297L)
@@ -984,6 +984,8 @@ unsigned long temptime = gettime();
 #endif
 
 }
+
+#endif
 
 
 /****************************************************************************SBUS***********************************************************************/

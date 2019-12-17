@@ -144,6 +144,9 @@ unsigned long ledcommandtime = 0;
 unsigned int osdcount = 0;
 unsigned char rx_switch = 0;
 extern unsigned char motorDir[4];
+extern int rx_bind_enable;
+
+extern int rx_bind_load;
 
 void failloop( int val);
 #ifdef USE_SERIAL_4WAY_BLHELI_INTERFACE
@@ -156,7 +159,7 @@ int main(void)
 {
 	
 	delay(1000);
-    rx_switch = RX_Default;
+    rx_switch = 1;
 
 #ifdef ENABLE_OVERCLOCK
 clk_init();
@@ -168,6 +171,7 @@ clk_init();
     flash_load();
     if(KEY == 0)
     {	
+        rx_bind_load = 0;
 		lite_2S_rx_spektrum_bind();	
 		rx_switch = 1;     
 		while(KEY == 0); 
@@ -241,6 +245,7 @@ aux[CH_AUX1] = 1;
 #ifdef RX_SBUS_DSMX_BAYANG_SWITCH
     if(rx_switch == 1)
     {
+        rx_bind_enable =1;
         rx_init();
         pFun = checkrx;
     }

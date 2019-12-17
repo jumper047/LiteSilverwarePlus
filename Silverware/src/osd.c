@@ -7,8 +7,8 @@
 
 
 
-#define AETR  ((-0.65f > rx[Yaw]) && (0.3f < rx[Throttle]) && (0.7f > rx[Throttle]) && (0.5f < rx[Pitch]) && (-0.3f < rx[Roll]) && (0.3f > rx[Roll]))
-#define TAER  ((-0.65f > rx[Yaw]) && (-0.3f < rx[Pitch]) && (0.3f > rx[Pitch]) && (0.7f < rx[Roll]) && (0.7f > rx[Throttle]) && (0.3f < rx[Throttle]))
+#define AETR  ((-0.4f > rx[Yaw]) && (0.3f < rx[Throttle]) && (0.7f > rx[Throttle]) && (0.5f < rx[Pitch]) && (-0.3f < rx[Roll]) && (0.3f > rx[Roll]))
+#define TAER  ((-0.4f > rx[Yaw]) && (-0.3f < rx[Pitch]) && (0.3f > rx[Pitch]) && (0.7f < rx[Roll]) && (0.7f > rx[Throttle]) && (0.3f < rx[Throttle]))
 
 
 extern void flash_load( void);
@@ -118,26 +118,26 @@ void osd_setting()
 
     if(1 == menu_flag)
     {
-		if((rx[Pitch] < -0.6f) && (down_flag == 1))
+		if((rx[Pitch] < -0.4f) && (down_flag == 1))
 		{
 			  Menu_pointer = Menu_pointer->next;
 				down_flag = 0;
 		}		
 		
-		if((rx[Pitch] > 0.6f) && (up_flag == 1))
+		if((rx[Pitch] > 0.4f) && (up_flag == 1))
 		{
 			  Menu_pointer = Menu_pointer->prior;
 				up_flag = 0;
 		}
 		
-		if((rx[Pitch]) < 0.6f && (rx[Pitch] > -0.6f))
+		if((rx[Pitch]) < 0.4f && (rx[Pitch] > -0.4f))
 		{
 				up_flag = 1;
 				down_flag = 1;
 		}
 		
 		/******************************************************************/
-		if((rx[Roll] > 0.6f) && right_flag == 1) 
+		if((rx[Roll] > 0.4f) && right_flag == 1) 
 		{
             if(0 == Menu_pointer->menu_class && 0 == Menu_pointer->menu_index) 
             {
@@ -268,7 +268,7 @@ void osd_setting()
             right_flag = 0;
 		}
 		
-		if((rx[Roll] < -0.6f) && left_flag == 1)
+		if((rx[Roll] < -0.4f) && left_flag == 1)
 		{
             int a;
             if(1 == Menu_pointer->menu_class)
