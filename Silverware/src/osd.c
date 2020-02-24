@@ -26,7 +26,7 @@ extern float pidki[PIDNUMBER];
 extern float pidkd[PIDNUMBER];
 extern int number_of_increments[3][3];
 extern unsigned long lastlooptime;
-
+extern int onground;
 unsigned char profileAB =0;
 
 unsigned char powerlevel = 0;
@@ -174,7 +174,7 @@ void osd_setting()
                 }
             }
             else{
-                if(AETR)
+                if(AETR && !onground)
                 {
                     showcase = 1;
                     unsigned char i = 0;
