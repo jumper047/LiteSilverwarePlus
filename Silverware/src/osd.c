@@ -174,7 +174,7 @@ void osd_setting()
                 }
             }
             else{
-                if(AETR && !onground)
+                if(AETR && onground)
                 {
                     showcase = 1;
                     unsigned char i = 0;
