@@ -207,12 +207,11 @@ int main(void)
 	delay(1000);
     RCC->APB2ENR |= RCC_APB2ENR_SYSCFGCOMPEN;	
     SYSCFG->CFGR1 |= SYSCFG_CFGR1_PA11_PA12_RMP;
+    delay(1000);
+    gpiopa_init();
     
-    
-    //here just a flag, if it is setted, then enter DFU and need to reflash
-    reboot=*(uint16*)0x08007CF0;
-    if(reboot == 15){
-
+    if( KEY11 ==0 || KEY12 == 0)
+    {
         flashErase();
 
         delay(1000);
@@ -224,6 +223,21 @@ int main(void)
 
         Jump_To_Boot();
     }
+//    //here just a flag, if it is setted, then enter DFU and need to reflash
+//    reboot=*(uint16*)0x08007CF0;
+//    if(reboot == 15){
+
+//        flashErase();
+
+//        delay(1000);
+//        uint32_t JumpAddress = *(__IO uint32_t*) (ApplicationAddress + 4);
+
+//        pFunction Jump_To_Boot = (pFunction) JumpAddress;
+
+//        __set_MSP(*(__IO uint32_t*) ApplicationAddress);
+
+//        Jump_To_Boot();
+//    }
       
 #ifdef ENABLE_OVERCLOCK
     clk_init();
@@ -521,7 +535,7 @@ if( thrfilt > 0.1f )
 
     vbatt_comp = tempvolt + (float) VDROP_FACTOR * thrfilt; 	
 
-#if 0          
+#if 1          
 
 if ( LED_NUMBER > 0)
 {
@@ -646,14 +660,14 @@ rgb_dma_start();
 // receiver function
 	pFun();
     
-    if(onground){
-        //enable button interrupt
-        EXTI->IMR |=(EXTI_Line1);
-    }
-    else{
-        //disable button interrupt
-        EXTI->IMR &= ~(EXTI_Line1); 
-    }
+//    if(onground){
+//        //enable button interrupt
+//        EXTI->IMR |=(EXTI_Line1);
+//    }
+//    else{
+//        //disable button interrupt
+//        EXTI->IMR &= ~(EXTI_Line1); 
+//    }
         
 #ifdef Lite_OSD   
 
@@ -813,22 +827,22 @@ void UsageFault_Handler(void)
 	failloop(5);
 }
 
-void EXTI0_1_IRQHandler(void){
-	if(EXTI_GetITStatus(EXTI_Line1)!=RESET)
-	{
-		delay(100);
-        if(KEY ==0){
-            
-          FLASH_Unlock();
-         FLASH_ErasePage(0x08007C00);
-        
-         FLASH_ProgramWord(0x08007CF0, 15);
-         FLASH_Lock();
-         NVIC_SystemReset();
-        }
-	}
-	EXTI_ClearFlag(EXTI_Line1);
-}
+//void EXTI0_1_IRQHandler(void){
+//	if(EXTI_GetITStatus(EXTI_Line1)!=RESET)
+//	{
+//		delay(100);
+//        if(KEY ==0){
+//            
+//          FLASH_Unlock();
+//         FLASH_ErasePage(0x08007C00);
+//        
+//         FLASH_ProgramWord(0x08007CF0, 15);
+//         FLASH_Lock();
+//         NVIC_SystemReset();
+//        }
+//	}
+//	EXTI_ClearFlag(EXTI_Line1);
+//}
 
 #ifdef USE_SERIAL_4WAY_BLHELI_INTERFACE
 
