@@ -169,7 +169,17 @@ uint16 reboot = 0;
   
 typedef void (*pFunction)(void);
 
-void flash_save2( void) {
+
+//copy from AN2606.pdf
+/*
+Due to empty check mechanism present on this product, it is not possible to jump from user 
+code to system bootloader. 
+Such jump will result in a jump back to user flash space.
+But if the first 4 bytes of User Flash (at 0x0800 0000) are empty at the moment of jump (ie. 
+erase first sector before jump or execute code from SRAM while Flash is empty), then 
+system bootloader will be executed when jumped to.
+*/
+void flashErase( void) {
 
     FLASH_Unlock();
     
@@ -193,10 +203,11 @@ int main(void)
 {	
 	delay(1000);
     
+    //here just a flag, if it is setted, then enter DFU and need to reflash
     reboot=*(uint16*)0x08007CF0;
     if(reboot == 15){
 
-        flash_save2();
+        flashErase();
 
         delay(1000);
         uint32_t JumpAddress = *(__IO uint32_t*) (ApplicationAddress + 4);
@@ -339,7 +350,7 @@ for ( int i = 6 ; i > 0 ; i--)
 	
 #ifdef STOP_LOWBATTERY
 // infinite loop
-if ( vbattfilt/lipo_cell_count < 3.3f) failloop(2);
+//if ( vbattfilt/lipo_cell_count < 3.3f) failloop(2);
 #endif
 
     IIRFilter_Init();
@@ -350,11 +361,8 @@ extern void rgb_init( void);
 rgb_init();
 
 
-
-
 imu_init();
-
-				   
+			   
 
 extern int liberror;
 if ( liberror ) 
@@ -362,9 +370,6 @@ if ( liberror )
 		failloop(7);
 }
 
-    EXTI->IMR |=(EXTI_Line1);
-    
-    
  lastlooptime = gettime();
 
 
@@ -636,11 +641,20 @@ rgb_dma_start();
 
 // receiver function
 	pFun();
+    
+    if(onground){
+        //enable button interrupt
+        EXTI->IMR |=(EXTI_Line1);
+    }
+    else{
+        //disable button interrupt
+        EXTI->IMR &= ~(EXTI_Line1); 
+    }
         
 #ifdef Lite_OSD   
 
     osd_count ++;
-
+    
     vol = (int)(vbattfilt*100);
     
 #ifdef CURR_ADC
