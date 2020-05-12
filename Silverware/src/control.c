@@ -473,25 +473,6 @@ if (aux[CH_AUX1]){
 }
 #endif
 
-#ifdef ENABLE_BARO
-    extern int rxmode;
-    int rx_good = 0;
-    extern float altitude, alt_target;
-
-    if (aux[LEVELMODE] && aux[HORIZON])
-    {
-        rx_good = (rx_good || !(rx[0]==0 && rx[1]==0 && rx[2]==0 && rx[3]==0));
-        if (rx_good && aux[ARMING])
-        {
-            throttle = altitude_hold();
-            throttle_smooth(&throttle);
-        }
-        else
-        {
-            alt_target = altitude;
-        }
-    }
-#endif
 
 // turn motors off if throttle is off and pitch / roll sticks are centered
 	if ( showcase || failsafe || (throttle < 0.001f && (!ENABLESTIX || !onground_long || aux[LEVELMODE] || (fabsf(rx[ROLL]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[PITCH]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[YAW]) < (float) ENABLESTIX_TRESHOLD ) ) ) ) 

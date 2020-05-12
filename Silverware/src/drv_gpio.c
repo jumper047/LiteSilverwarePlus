@@ -4,53 +4,31 @@
 
 void gpio_init(void)
 {
-// clocks on to all ports			
-  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB | RCC_AHBENR_GPIOFEN , ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA | RCC_AHBPeriph_GPIOB | RCC_AHBENR_GPIOFEN , ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
+    
+    GPIO_InitTypeDef    GPIO_InitStructure;
+     EXTI_InitTypeDef   EXTI_InitStructure;
+     NVIC_InitTypeDef   NVIC_InitStructure;
+    
+    GPIO_InitStructure.GPIO_Pin = LED1PIN;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+    GPIO_Init(LED1PORT, &GPIO_InitStructure); 
+    GPIO_SetBits(LED1PORT,LED1PIN);
+    
+    EXTI_InitStructure.EXTI_Line = EXTI_Line1;
+    EXTI_InitStructure.EXTI_Mode = EXTI_Mode_Interrupt;
+    EXTI_InitStructure.EXTI_Trigger = EXTI_Trigger_Falling;
+    EXTI_InitStructure.EXTI_LineCmd = ENABLE;
+    EXTI_Init(&EXTI_InitStructure);
+    
+    SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOA, EXTI_PinSource1);
 
-  GPIO_InitTypeDef  GPIO_InitStructure;
-
-
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	
-#ifdef ENABLE_Board_RX 
-  GPIO_InitStructure.GPIO_Pin = RX_PSW_PIN;	
-  GPIO_Init(RX_PSW_PORT, &GPIO_InitStructure); 
-#endif	
-#ifdef ENABLE_VREG_PIN	
-	GPIO_InitStructure.GPIO_Pin = VREG_PIN_1;	
-  GPIO_Init(VREG_PORT_1, &GPIO_InitStructure); 
-	GPIO_SetBits( VREG_PORT_1, VREG_PIN_1);
-#endif
-
-	
-#if ( LED_NUMBER > 0 )
-  GPIO_InitStructure.GPIO_Pin = LED1PIN;	
-  GPIO_Init(LED1PORT, &GPIO_InitStructure); 
-#if ( LED_NUMBER > 1 )	
-	GPIO_InitStructure.GPIO_Pin = LED2PIN;	
-  GPIO_Init(LED2PORT, &GPIO_InitStructure); 
-#if ( LED_NUMBER > 2 )	
-	GPIO_InitStructure.GPIO_Pin = LED3PIN;	
-  GPIO_Init(LED3PORT, &GPIO_InitStructure); 
-#if ( LED_NUMBER > 3 )	
-	GPIO_InitStructure.GPIO_Pin = LED4PIN;	
-  GPIO_Init(LED4PORT, &GPIO_InitStructure); 
-#endif
-#endif
-#endif
-#endif
-
-#if ( AUX_LED_NUMBER > 0 )
-  GPIO_InitStructure.GPIO_Pin = AUX_LED1PIN;	
-  GPIO_Init(AUX_LED1PORT, &GPIO_InitStructure); 
-#endif	
-#if ( AUX_LED_NUMBER > 1 )
-  GPIO_InitStructure.GPIO_Pin = AUX_LED2PIN;	
-  GPIO_Init(AUX_LED2PORT, &GPIO_InitStructure); 
-#endif	
+        
+    NVIC_InitStructure.NVIC_IRQChannel=EXTI0_1_IRQn;
+    NVIC_InitStructure.NVIC_IRQChannelPriority=0x01;
+    NVIC_InitStructure.NVIC_IRQChannelCmd=ENABLE;
+    NVIC_Init(&NVIC_InitStructure);	
 
 }
 

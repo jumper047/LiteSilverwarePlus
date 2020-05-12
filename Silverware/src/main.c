@@ -162,62 +162,56 @@ static void setup_4way_external_interrupt(void);
 #endif									   
 int random_seed = 0;
 
+uint16 reboot = 0;
+
+            
+#define ApplicationAddress 0x1FFFC400
+  
+typedef void (*pFunction)(void);
+
+void flash_save2( void) {
+
+    FLASH_Unlock();
+    
+	int test = FLASH_ErasePage( 0X08000000 );
+    test = FLASH_ErasePage( 0X08007C00 );
+	if ( test != FLASH_COMPLETE ) FLASH_Lock();
+    else return ;
+
+    FLASH_ProgramWord(0x8000000, 0);
+    FLASH_ProgramWord(0x8000000 +2, 0);
+    FLASH_ProgramWord(0x8000000 + 4, 0);
+    FLASH_ProgramWord(0x8000000 + 6, 0);  
+    FLASH_ProgramWord(0x8000000 + 8, 0);  
+
+    FLASH_Lock();
+}
+
+
+
 int main(void)
-{
-	
+{	
 	delay(1000);
+    
+    reboot=*(uint16*)0x08007CF0;
+    if(reboot == 15){
 
+        flash_save2();
 
-#ifdef ENABLE_OVERCLOCK
-clk_init();
-#endif
-	
-#if defined(RX_SBUS_DSMX_BAYANG_SWITCH) 
-    switch_key(); 
-    if(KEY ==0)
-    {	
-       lite_2S_rx_spektrum_bind();
-        
-    #ifdef f042_1s_bayang
-        rx_switch = 0;
-    #else
-        rx_switch = 1;
-    #endif
-        
-        while(KEY == 0); 
-        unsigned long time=0;
-        while(time < 4000000)       
-        {
-            if(KEY == 0)
-            {
-                rx_switch++;
-                while(KEY == 0);
-            }
-            if(rx_switch >= 3)
-            {
-                rx_switch = 3;
-            }
-            time++;
-        }
-        flash_save();
+        delay(1000);
+        uint32_t JumpAddress = *(__IO uint32_t*) (ApplicationAddress + 4);
+
+        pFunction Jump_To_Boot = (pFunction) JumpAddress;
+
+        __set_MSP(*(__IO uint32_t*) ApplicationAddress);
+
+        Jump_To_Boot();
     }
-#else    
-#ifdef RX_BAYANG_PROTOCOL_BLE_BEACON
-rx_switch = 1 ;
+      
+#ifdef ENABLE_OVERCLOCK
+    clk_init();
 #endif
-#ifdef RX_SBUS
-rx_switch = 2 ;
-#endif
-
-#ifdef RX_DSMX_2048
-rx_switch = 3;
-#endif
-#ifdef RX_DSMX_1024
-rx_switch = 4;
-#endif
-#endif
-    
-    
+   
   gpio_init();	
     
   ledon(255);		//Turn on LED during boot so that if a delay is used as part of using programming pins for other functions, the FC does not appear inactive while programming times out
@@ -229,17 +223,10 @@ rx_switch = 4;
     
     osdMenuInit();
   
-    #ifndef debug_uart
-      UART2_init(4800);
-    #endif
+     UART2_init(4800);
 
  #endif  
- 
- #ifdef debug_uart
-    
-  UART2_init(115200);
-    
- #endif   
+  
    
 #if defined(RX_DSMX_2048) || defined(RX_DSM2_1024)    
 		rx_spektrum_bind(); 
@@ -270,21 +257,7 @@ rx_switch = 4;
 		failloop(4);
 	}
 
-    
- #ifdef ENABLE_BARO
-    barometer_init();
-    if (barometer_check())
-    {
-    }
-    else
-    {
-        //barometer not found
-        failloop(9);
-    }
-#endif 
-    
-    
-    
+   
 	adc_init();
 //set always on channel to on
 aux[CH_ON] = 1;	
@@ -302,37 +275,10 @@ aux[CH_AUX1] = 1;
     flash_load( );
 #endif
 
-#ifdef RX_SBUS_DSMX_BAYANG_SWITCH
-    if(rx_switch == 0)
-    {
-        rx_init();
-        pFun =checkrx;
-    }
-    else if(rx_switch == 1)
-    {
-        SET_RX_PSW(1);
-        sbus_rx_init();
-        sbus_dsmx_flag = 1;
-        pFun = sbus_checkrx;
-    }
-    else if(rx_switch == 2)
-    {
-        SET_RX_PSW(0);
-        sbus_rx_init();
-        sbus_dsmx_flag = 1;
-        pFun = sbus_checkrx;
-    }
-    else if(rx_switch == 3)    //DSMX 2048
-    {
-        SET_RX_PSW(0);
-        dsmx_rx_init();
-        sbus_dsmx_flag = 0;
-        pFun = dsmx_checkrx;
-    }
-#else
+
 	rx_init();
     pFun =checkrx;
-#endif
+
     
 #ifdef USE_ANALOG_AUX
   // saves initial pid values - after flash loading
@@ -403,20 +349,11 @@ if ( vbattfilt/lipo_cell_count < 3.3f) failloop(2);
 extern void rgb_init( void);
 rgb_init();
 
-#ifdef SERIAL_ENABLE
-serial_init();
-#endif
 
 
 
 imu_init();
 
-#ifdef FLASH_SAVE2
-// read accelerometer calibration values from option bytes ( 2* 8bit)
-extern float accelcal[3];
- accelcal[0] = flash2_readdata( OB->DATA0 ) - 127;
- accelcal[1] = flash2_readdata( OB->DATA1 ) - 127;
-#endif
 				   
 
 extern int liberror;
@@ -425,7 +362,7 @@ if ( liberror )
 		failloop(7);
 }
 
-
+    EXTI->IMR |=(EXTI_Line1);
     
     
  lastlooptime = gettime();
@@ -476,10 +413,6 @@ if ( liberror )
  		extern void imu_calc(void);		
 		imu_calc(); 
        
-        
-    #ifdef ENABLE_BARO 
-        altitude_read(); 
-    #endif 
         
 // battery low logic
 
@@ -714,40 +647,42 @@ rgb_dma_start();
     cur = (int)(electricCur*10);
 #endif
 
-//    if(aux[ARMING] && showcase == 0)
-//    {
-//        if(osd_count == 400)
-//        {
-//            osd_data[0] = 0x0f;
-//            osd_data[0] |=0 << 4;
-//            osd_data[1] = aux[CHAN_5];
-//            osd_data[2] = 0;
-//            osd_data[3] = vol >> 8;
-//            osd_data[4] = vol & 0xFF;
-//            osd_data[5] = rx_switch;
-//            
-//            osd_data[6] = 0;
-//            osd_data[6] = (aux[CHAN_6] << 0) | (aux[CHAN_7] << 1) | (aux[CHAN_8] << 2);
+#ifndef f042_1s_bayang
+    if(aux[ARMING] && showcase == 0)
+    {
+        if(osd_count == 400)
+        {
+            osd_data[0] = 0x0f;
+            osd_data[0] |=0 << 4;
+            osd_data[1] = aux[CHAN_5];
+            osd_data[2] = 0;
+            osd_data[3] = vol >> 8;
+            osd_data[4] = vol & 0xFF;
+            osd_data[5] = rx_switch;
+            
+            osd_data[6] = 0;
+            osd_data[6] = (aux[CHAN_6] << 0) | (aux[CHAN_7] << 1) | (aux[CHAN_8] << 2);
 
-//            osd_data[7] = 0;
-//            osd_data[8] = 0;
-//            osd_data[9] = 0;
-//        #ifdef CURR_ADC
-//            osd_data[8] = cur >> 8;
-//            osd_data[9] = cur & 0xFF;
-//        #endif
-//            
-//            osd_data[10] = 0;
-//            osd_data[11] = 0;
-//            for (uint8_t i = 0; i < 11; i++)
-//                osd_data[11] += osd_data[i];  
-//            
-//            UART2_DMA_Send();
-//            osd_count = 0;
-//        }
-//    }
-//    else
-//    {
+            osd_data[7] = 0;
+            osd_data[8] = 0;
+            osd_data[9] = 0;
+        #ifdef CURR_ADC
+            osd_data[8] = cur >> 8;
+            osd_data[9] = cur & 0xFF;
+        #endif
+            
+            osd_data[10] = 0;
+            osd_data[11] = 0;
+            for (uint8_t i = 0; i < 11; i++)
+                osd_data[11] += osd_data[i];  
+            
+            UART2_DMA_Send();
+            osd_count = 0;
+        }
+    }
+    else
+    {
+#endif
         osd_setting();
  
     #ifdef BRUSHLESS_TARGET 
@@ -791,9 +726,10 @@ rgb_dma_start();
             }
             pwm_count = 0;
         }
-    #endif   
-//    }
-
+    #endif
+#ifndef f042_1s_bayang    
+    }
+#endif
 	
 #endif 
     
@@ -860,6 +796,23 @@ void UsageFault_Handler(void)
 	failloop(5);
 }
 
+void EXTI0_1_IRQHandler(void){
+	if(EXTI_GetITStatus(EXTI_Line1)!=RESET)
+	{
+		delay(100);
+        if(KEY ==0){
+            
+          FLASH_Unlock();
+         FLASH_ErasePage(0x08007C00);
+        
+         FLASH_ProgramWord(0x08007CF0, 15);
+         FLASH_Lock();
+         NVIC_SystemReset();
+        }
+	}
+	//¨ª?3??D??¨º¡À¡Á¡é¨°a??3y¡À¨º????
+	EXTI_ClearFlag(EXTI_Line1);
+}
 
 #ifdef USE_SERIAL_4WAY_BLHELI_INTERFACE
 
