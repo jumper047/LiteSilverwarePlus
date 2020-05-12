@@ -52,7 +52,10 @@ THE SOFTWARE.
 #include "binary.h"
 #include "osd.h"
 #include "IIR_filter.h"
-
+#include "usbd_cdc_core.h"
+#include  "usbd_usr.h"
+#include "usb_dcd.h"
+#include "usbd_cdc_vcp.h"
 
 #include <stdio.h>
 #include <math.h>
@@ -76,6 +79,7 @@ THE SOFTWARE.
 debug_type debug;
 #endif
 
+USB_CORE_HANDLE  USB_Device_dev ;
 
 // hal
 void clk_init(void);
@@ -198,10 +202,12 @@ void flashErase( void) {
 }
 
 
-
 int main(void)
 {	
 	delay(1000);
+    RCC->APB2ENR |= RCC_APB2ENR_SYSCFGCOMPEN;	
+    SYSCFG->CFGR1 |= SYSCFG_CFGR1_PA11_PA12_RMP;
+    
     
     //here just a flag, if it is setted, then enter DFU and need to reflash
     reboot=*(uint16*)0x08007CF0;
@@ -226,24 +232,22 @@ int main(void)
   gpio_init();	
     
   //ledon(255);		
-    spi_init();
+   spi_init();
 	
-  time_init();
+   time_init();
 
  #ifdef Lite_OSD
     
     osdMenuInit();
   
-     UART2_init(4800);
+    UART2_init(4800);
 
  #endif  
-  
-   
+     
 #if defined(RX_DSMX_2048) || defined(RX_DSM2_1024)    
 		rx_spektrum_bind(); 
 #endif
-	
-	
+		
 	delay(100000);
 		
 	i2c_init();	
