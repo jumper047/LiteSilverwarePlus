@@ -214,8 +214,8 @@ int main(void)
    
   gpio_init();	
     
-  ledon(255);		//Turn on LED during boot so that if a delay is used as part of using programming pins for other functions, the FC does not appear inactive while programming times out
-	spi_init();
+  //ledon(255);		
+    spi_init();
 	
   time_init();
 
@@ -512,7 +512,7 @@ if( thrfilt > 0.1f )
 
     vbatt_comp = tempvolt + (float) VDROP_FACTOR * thrfilt; 	
 
-           
+#if 0          
 
 if ( LED_NUMBER > 0)
 {
@@ -576,7 +576,7 @@ if ( LED_NUMBER > 0)
     }
 }
 
-
+#endif
 
 #if ( RGB_LED_NUMBER > 0)
 // RGB led control
@@ -747,7 +747,6 @@ while ( (gettime() - time) < LOOPTIME );
 }
 
 
-
 // 2 - low battery at powerup - if enabled by config
 // 3 - radio chip not detected
 // 4 - Gyro not found
@@ -759,23 +758,23 @@ while ( (gettime() - time) < LOOPTIME );
 
 void failloop( int val)
 {
-	for ( int i = 0 ; i <= 3 ; i++)
-	{
-		pwm_set( i ,0 );
-	}	
+//	for ( int i = 0 ; i <= 3 ; i++)
+//	{
+//		pwm_set( i ,0 );
+//	}	
 
-	while(1)
-	{
-		for ( int i = 0 ; i < val; i++)
-		{
-		 ledon( 255);		
-		 delay(200000);
-		 ledoff( 255);	
-		 delay(200000);			
-		}
-		delay(800000);
-	}	
-	
+//	while(1)
+//	{
+//		for ( int i = 0 ; i < val; i++)
+//		{
+//		 ledon( 255);		
+//		 delay(200000);
+//		 ledoff( 255);	
+//		 delay(200000);			
+//		}
+//		delay(800000);
+//	}	
+	failsafe = 1;
 }
 
 
@@ -810,7 +809,6 @@ void EXTI0_1_IRQHandler(void){
          NVIC_SystemReset();
         }
 	}
-	//¨ª?3??D??¨º¡À¡Á¡é¨°a??3y¡À¨º????
 	EXTI_ClearFlag(EXTI_Line1);
 }
 
