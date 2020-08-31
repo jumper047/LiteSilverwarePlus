@@ -42,8 +42,6 @@ extern char led_color;
 
 extern	void rgb_send( int data);
 
-
-
 #if ( RGB_LED_NUMBER > 0)
 
 // array with individual led brightnesses
@@ -99,8 +97,130 @@ void rgb_ledflash( int color1 , int color2 , uint32_t period , int duty )
 
 }
 
+// speed of movement
+float RAINBOW_SPEED = 5.0f;
+int rgb_rainbow_phase[RGB_LED_NUMBER];
+int rgb_rainbow_colour[RGB_LED_NUMBER];
+#define rgb_decrease(amt) ((amt>0?fmax(amt-RAINBOW_SPEED,0):0))
+#define rgb_increase(amt) ((amt<255?fmin(amt+RAINBOW_SPEED,255):255))
 
+enum CURRENT_PHASE {
+	WHITE_PHASE=0,
+	RED_PHASE=1,
+	YELLOW_PHASE=2,
+	GREEN_PHASE=3,
+	TURQUISE_PHASE=4,
+	BLUE_PHASE=5,
+	INDIGO_PHASE=6
+};
 
+void rgb_led_set_rainbow(int led_number)
+{
+	// deconstruct the current colour into components
+	int g = rgb_rainbow_colour[led_number]>>16;
+	int r = (rgb_rainbow_colour[led_number]&0x0000FF00)>>8;
+	int b = rgb_rainbow_colour[led_number] & 0xff;
+	
+	switch(rgb_rainbow_phase[led_number])
+	{
+		case WHITE_PHASE:
+			// fade from indigo to white (red + blue + green)
+			if (r>=255 && g>=255 && b>=255)
+				rgb_rainbow_phase[led_number]++;
+			else
+			{
+					r=rgb_increase(r);
+					g=rgb_increase(g);
+					b=rgb_increase(b);
+				}
+			break;
+		case RED_PHASE:
+			// fade from white
+			if (r>=255 && g<=0 && b<=0)
+				rgb_rainbow_phase[led_number]++;
+			else
+			{
+					r=rgb_increase(r);
+					g=rgb_decrease(g);
+					b=rgb_decrease(b);
+				}			
+			break;
+		case YELLOW_PHASE:
+			// fade from red to yellow (Red + Green)
+			if (r>=255 && g>=255 && b<=0)
+				rgb_rainbow_phase[led_number]++;
+			else
+			{
+					r=rgb_increase(r);
+					g=rgb_increase(g);
+					b=rgb_decrease(b);
+				}			
+			break;
+		case GREEN_PHASE:
+			// fade from yellow to green
+			if (r<=0 && g>=255 && b<=0)
+				rgb_rainbow_phase[led_number]++;
+			else
+			{				
+					r=rgb_decrease(r);
+					g=rgb_increase(g);
+					b=rgb_decrease(b);
+				}			
+			break;
+		case TURQUISE_PHASE:
+			// fade from green to turquise (Green+Blue)
+			if (r<=0 && g>=255 && b>=255)
+				rgb_rainbow_phase[led_number]++;
+			else
+			{
+					r=rgb_decrease(r);
+					g=rgb_increase(g);
+					b=rgb_increase(b);
+			}			
+			break;
+		case BLUE_PHASE:
+			// fade from turquise to blue
+			if (r<=0 && g<=0 && b>=255)
+				rgb_rainbow_phase[led_number]++;
+			else
+			{
+					r=rgb_decrease(r);
+					g=rgb_decrease(g);
+					b=rgb_increase(b);
+				}			
+			break;
+		case INDIGO_PHASE:
+			// fade from blue to indigo (Red+Blue)
+			if (r>=255 && g<=0 && b>=255)
+				rgb_rainbow_phase[led_number]=0;
+			else
+			{
+					r=rgb_increase(r);
+					g=rgb_decrease(g);
+					b=rgb_increase(b);
+				}			
+			break;
+	}
+	
+	rgb_rainbow_colour[led_number] = RGB(r,g,b);
+	rgb_led_set_one( led_number , rgb_rainbow_colour[led_number] );
+}
+
+int init_complete=0;
+void rgb_rainbow(void)
+{
+		for ( int i = 0 ; i < RGB_LED_NUMBER ; i++)
+		{
+			// start the LEDs in the off position, and in a rainbow sequence
+			if (!init_complete)
+			{
+				rgb_rainbow_phase[i] = i % RGB_LED_NUMBER;
+				rgb_rainbow_colour[i] = 0;
+			}
+			rgb_led_set_rainbow(i);
+		}
+		init_complete=1;
+}
 
 
 // speed of movement
@@ -183,8 +303,8 @@ else
 		// bind mode
 		//rgb_ledflash ( RGB( 0 , 0 , 255 ), RGB( 0 , 128 , 0 ), 1000000, 12);
 		//	rgb_ledflash_twin( RGB( 0 , 0 , 255 ), RGB( 0 , 128 , 0 ), 1000000);
-			rgb_led_set_all( RGB_VALUE_BEFORE_BIND );
 		//	rgb_knight_rider();
+			rgb_led_set_all( RGB_VALUE_BEFORE_BIND );
 		}
 		else
 		{// non bind
@@ -214,7 +334,10 @@ else
                                     rgb_led_set_all(RGB_VALUE_CYAN);
                                   } else if (led_color == 7) {
                                     rgb_led_set_all(RGB_VALUE_MAGENTA);
-                                  }
+				    } else if (led_color ==8) {
+				      rgb_rainbow();
+				    }
+				    
                                   /* } else if (led_color == 8) { */
 				  /*     rgb_ledflash( RGB_VALUE_RED, RGB_VALUE_BLUE, ) */
                                   /* } */
