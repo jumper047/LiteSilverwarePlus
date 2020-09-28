@@ -1,4 +1,8 @@
-﻿LiteSilverware project is based on the NotFastEnuf Silverware firmware, AKA [NFE_Silverware](https://github.com/NotFastEnuf/NFE_Silverware), which has a big success on the brushed whoop FC board like Alienwhoop ZER0. Several features are included in order to support brushless drones.
+﻿This branch contains firmware specially adopted to my own Beta65SLite.
+
+## BetaFPV readme
+
+LiteSilverware project is based on the NotFastEnuf Silverware firmware, AKA [NFE_Silverware](https://github.com/NotFastEnuf/NFE_Silverware), which has a big success on the brushed whoop FC board like Alienwhoop ZER0. Several features are included in order to support brushless drones.
 
 1. Support brushless motor ESC firmware BLHeli_S.
 2. Support OSD interface, based on the [LiteOSD](https://github.com/BETAFPV/LiteOSD) project.
