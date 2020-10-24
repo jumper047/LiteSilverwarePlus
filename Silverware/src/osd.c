@@ -64,6 +64,11 @@ unsigned char low_battery=68;
     unsigned char rx_switch = 1;
 #endif
 
+#ifdef OSD_RSSI_INDICATION
+//Rssi
+int rx_rssi = 0;
+#endif
+
 unsigned int ratesValue=860;
 unsigned int ratesValueYaw = 500;
 
@@ -254,6 +259,9 @@ void osd_setting()
        
                     osd_data[7] = 0;
                     osd_data[8] = 0;
+#ifdef OSD_RSSI_INDICATION
+		    osd_data[8] = rx_rssi;
+#endif		    
                     osd_data[9] = 0;
                 #ifdef CURR_ADC
                     osd_data[8] = cur >> 8;

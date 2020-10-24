@@ -152,6 +152,16 @@
 
 
 
+//**********************************************************************************************************************
+//**************************************************OSD SETTINGS********************************************************
+// *************enable rssi indication on osd
+// *************if enabled, rssi will appear on osd instead of protocol name
+#define OSD_RSSI_INDICATION
+
+// *************by default, osd will display rssi value from channel 16
+// *************uncomment below if your receiver sends rssi via channel 8.
+//#define IBUS_RSSI_CHAN_8
+//#define SBUS_RSSI_CHAN_8
 
 //**********************************************************************************************************************
 //***********************************************VOLTAGE SETTINGS*******************************************************
