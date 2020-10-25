@@ -154,6 +154,10 @@
 
 //**********************************************************************************************************************
 //**************************************************OSD SETTINGS********************************************************
+// *************if uncommented, almost all new fancy osd features will be disabled
+// *************for now, only OSD_RSSI_WARNING will work without with stock osd firmware
+//#define STOCK_OSD
+
 // *************enable rssi indication on osd
 // *************if enabled, rssi will appear on osd instead of protocol name
 #define OSD_RSSI_INDICATION
@@ -162,6 +166,10 @@
 // *************uncomment below if your receiver sends rssi via channel 8.
 //#define IBUS_RSSI_CHAN_8
 //#define SBUS_RSSI_CHAN_8
+
+// *************on stock firmware you can set up receiver's type blinking when
+// *************your rssi drops below threshold
+//#define OSD_RSSI_WARNING 20
 
 //**********************************************************************************************************************
 //***********************************************VOLTAGE SETTINGS*******************************************************

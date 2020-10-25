@@ -69,6 +69,11 @@ unsigned char low_battery=68;
 int rx_rssi = 0;
 #endif
 
+#ifdef OSD_RSSI_WARNING
+unsigned long blinktime=0;
+unsigned char show_rx_name=0;
+#endif
+
 unsigned int ratesValue=860;
 unsigned int ratesValueYaw = 500;
 
@@ -252,8 +257,17 @@ void osd_setting()
                     osd_data[2] = 0;
                     osd_data[3] = vol >> 8;
                     osd_data[4] = vol & 0xFF;
+#ifndef OSD_RSSI_WARNING
                     osd_data[5] = rx_switch;
-                    
+#else
+		    if (rx_rssi < OSD_RSSI_WARNING){
+		      if (gettime() - blinktime > 500000){
+			show_rx_name = !show_rx_name;
+			blinktime = gettime();
+		      }
+		      osd_data[5] = (show_rx_name?5:rx_switch);
+		    }
+#endif		    
                     osd_data[6] = 0;
                     osd_data[6] = (aux[CHAN_6] << 0) | (aux[CHAN_7] << 1) | (aux[CHAN_8] << 2);
        
