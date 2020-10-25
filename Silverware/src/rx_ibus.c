@@ -78,8 +78,10 @@ uint32 ticksStart = 0;
 uint32 ticksEnd = 0;
 uint32 ticksLongest = 0;
 
-
-
+//RSSI value variable
+#ifdef OSD_RSSI_INDICATION
+extern int rx_rssi;
+#endif
 
 //Telemetry variables
 
@@ -318,7 +320,16 @@ void checkrx()
 					aux[CHAN_13] = (channels[12] > 1600) ? 1 : 0;
 					aux[CHAN_14] = (channels[13] > 1600) ? 1 : 0;
 					*/
-					
+
+					//Fulfill rssi
+#ifdef OSD_RSSI_INDICATION
+					rx_rssi = (channels[13] - 1000) / 10;
+					if (rx_rssi > 99) {
+					  rx_rssi = 99;
+					} else if (rx_rssi < 1) {
+					  rx_rssi = 1;
+					}
+#endif
 					
           time_lastframe = gettime();
           if (ibus_stats) stat_frames_accepted++;

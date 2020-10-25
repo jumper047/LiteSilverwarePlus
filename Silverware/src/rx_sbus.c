@@ -27,6 +27,11 @@ extern char auxchange[AUXNUMBER];
 extern float aux_analog[AUXNUMBER];
 extern float lastaux_analog[AUXNUMBER];
 extern char aux_analogchange[AUXNUMBER];
+
+#ifdef OSD_RSSI_INDICATION
+extern int rx_rssi;
+#endif
+
 int failsafe = 0;
 int rxmode = 0;
 int rx_ready = 0;
@@ -268,6 +273,16 @@ if ( frame_received )
    channels[6]  = ((data[9]>>2|data[10]<<6) & 0x07FF);
    channels[7]  = ((data[10]>>5|data[11]<<3) & 0x07FF);
    channels[8]  = ((data[12]|data[13]<< 8) & 0x07FF);
+
+#ifdef OSD_RSSI_INDICATION
+   rx_rssi = ((data[21] >> 5 | data[22] << 3) & 0x07FF) / 20.47;
+   if (rx_rssi > 99) {
+     rx_rssi = 99;
+   } else if (rx_rssi < 1) {
+     rx_rssi = 1;
+   }
+#endif
+
 
     if ( rx_state == 0)
     {
