@@ -3,6 +3,7 @@
 #include "drv_time.h"
 #include "math.h"
 #include <stdlib.h>
+#include <name.h>
 
 #define AETR  ((-0.6f > rx[Yaw]) && (0.3f < rx[Throttle]) && (0.7f > rx[Throttle]) && (0.6f < rx[Pitch]) && (-0.3f < rx[Roll]) && (0.3f > rx[Roll]))
 #define toy_AETR  ((-0.6f > rx[Yaw]) && (0.3f > rx[Throttle]) && (0.6f < rx[Pitch]) && (-0.3f < rx[Roll]) && (0.3f > rx[Roll]))
@@ -44,10 +45,14 @@ unsigned char mode_l=21;
 unsigned char vol_l=23;
 unsigned char curr_l = 23;
 unsigned char turtle_l=18;
+unsigned char name_l=3;
+unsigned char crosschair_l=13;
 unsigned char tx_config=0;
 unsigned char mode_config=0;
 unsigned char led_config=0;
 unsigned char T8SG_config=0;
+unsigned char display_name=0;
+unsigned char display_crosschair=0;
 char motorDir[4] = {0,0,0,0};
 
 #if defined(f042_1s_bl) || defined(f042_1s_bayang) 
@@ -148,7 +153,11 @@ void osd_setting()
     if(showcase_cnt < 1610)
     {
         showcase_cnt++;
-        showcase =6;
+        showcase =9;
+    }
+    else if(showcase_cnt < 2610){
+      showcase_cnt++;
+      showcase=6;
     }
     else if(!showcase_init){
         showcase_init = 1;
@@ -794,16 +803,40 @@ void osd_setting()
                         break;
                 #ifdef f042_1s_bayang
                     case 3:
+		      // name position
+                        name_l++;
+                        if(name_l>32)
+                            name_l=0;
+                        break;
+
+                    case 4:
+		      // display name
+  		      display_name = !display_name;
+		      break;
+
+                    case 5:
+		      // crosschair position
+                        crosschair_l++;
+                        if(crosschair_l>32)
+                            crosschair_l=0;
+                        break;
+
+                    case 6:
+		      // display crosschair
+		      display_crosschair = !display_crosschair;
+		      break;
+
+                    case 7:
                         low_battery++;
                         if(low_battery>40)
                             low_battery=28;
                         break;
-                        
-                    case 4:
+
+                    case 8:
                         showcase = 1;
                         displayMenu = displayMenuHead;
                         currentMenu = setMenuHead;
-                        break;  
+                        break;
                         
                 #endif
                 #ifdef f042_1s_bl
@@ -881,6 +914,30 @@ void osd_setting()
                         break;
                 #ifdef f042_1s_bayang
                     case 3:
+		      // name position
+                        name_l++;
+                        if(name_l>32)
+                            name_l=0;
+                        break;
+
+                    case 4:
+		      // display name
+		      display_name = !display_name;
+		      break;
+
+                    case 5:
+		      // crosschair position
+                        crosschair_l++;
+                        if(crosschair_l>32)
+                            crosschair_l=0;
+                        break;
+
+                    case 6:
+		      // display crosschair
+		      display_crosschair = !display_crosschair;
+		      break;
+
+                    case 7:
                         low_battery--;
                         if(low_battery<28)
                             low_battery=40;
@@ -940,9 +997,9 @@ void osd_setting()
             #endif
                 osd_data[6] = turtle_l;
                 osd_data[7] = low_battery;
-                osd_data[8] = 0;
-                osd_data[9] = 0;
-                osd_data[10] = 0;
+                osd_data[8] = name_l;
+                osd_data[9] = crosschair_l;
+		osd_data[10] = (display_crosschair<<1) + display_name;
                 osd_data[11] = 0;
                 for (uint8_t i = 0; i < 11; i++)
                     osd_data[11] += osd_data[i];  
@@ -1019,7 +1076,24 @@ void osd_setting()
                 UART2_DMA_Send();
                 osd_count = 0;
             }
-            break;    
+            break;
+    case 9:
+            if(osd_count >= 200)
+            {
+      osd_data[0] = 0x0f;
+      osd_data[0] |= showcase << 4;
+      for (uint8_t i = 1; i < 11; i++)
+	{
+	  osd_data[i] = name[i-1];
+	}
+      osd_data[11] = 0;
+      for (uint8_t i = 0; i < 11; i++)
+        osd_data[11] += osd_data[i];
+
+      UART2_DMA_Send();
+      osd_count = 0;
+            }
+      break;
         default:
             break;
     }
@@ -1027,7 +1101,7 @@ void osd_setting()
 
 menu_list createMenu(char len,char item)
 {
-    char i = 0;
+      char i = 0;
     menu_list pTail = NULL,p_new = NULL;
     menu_list pHead = (menu_list)malloc(sizeof(menu_node));
     if(NULL == pHead)
@@ -1085,7 +1159,7 @@ void osdMenuInit(void)
 #endif
 
 #ifdef f042_1s_bayang
-    displayMenu = createMenu(4,5);
+    displayMenu = createMenu(8,5);
 #endif
 
     displayMenuHead = displayMenu;

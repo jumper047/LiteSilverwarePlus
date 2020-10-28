@@ -667,6 +667,11 @@
               <FileType>5</FileType>
               <FilePath>.\src\rx_sbus_dsmx_bayang_switch.h</FilePath>
             </File>
+            <File>
+              <FileName>name.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\src\name.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
