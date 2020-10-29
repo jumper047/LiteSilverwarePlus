@@ -207,14 +207,14 @@ void osd_setting()
                 {
                     osd_data[0] = 0x0f;
                     osd_data[0] |=showcase << 4;
-                    osd_data[1] = aux[CHAN_5];
-                    osd_data[2] = 0;
+                    osd_data[1] = aux[ARMING];
+                    osd_data[2] = aux[HIDEOSD];
                     osd_data[3] = vol >> 8;
                     osd_data[4] = vol & 0xFF;
                     osd_data[5] = rx_switch;
-                    
+                     
                     osd_data[6] = 0;
-                    osd_data[6] = (aux[CHAN_6] << 0);
+                    osd_data[6] = (aux[LEVELMODE] << 0);
        
                     osd_data[7] = 0;
                     osd_data[8] = 0;
@@ -269,8 +269,8 @@ void osd_setting()
                 {
                     osd_data[0] = 0x0f;
                     osd_data[0] |=showcase << 4;
-                    osd_data[1] = aux[CHAN_5];
-                    osd_data[2] = 0;
+                    osd_data[1] = aux[ARMING];
+                    osd_data[2] = aux[HIDEOSD];
                     osd_data[3] = vol >> 8;
                     osd_data[4] = vol & 0xFF;
 #ifndef OSD_RSSI_WARNING
@@ -285,7 +285,7 @@ void osd_setting()
 		    }
 #endif		    
                     osd_data[6] = 0;
-                    osd_data[6] = (aux[CHAN_6] << 0) | (aux[CHAN_7] << 1) | (aux[CHAN_8] << 2);
+                    osd_data[6] = (aux[LEVELMODE] << 0) | (aux[RACEMODE] << 1) | (aux[HORIZON] << 2);
        
                     osd_data[7] = 0;
                     osd_data[8] = 0;
@@ -881,6 +881,7 @@ void osd_setting()
                         break;
                         
                     case 6:
+
                         showcase = 1;
                         displayMenu = displayMenuHead;
                         currentMenu = setMenuHead;
@@ -917,6 +918,7 @@ void osd_setting()
                         }
                       break;
 
+
                 #ifdef f042_1s_bl
                     case 3:
                         if(turtle_l==0)
@@ -930,6 +932,7 @@ void osd_setting()
                         if(low_battery<28)
                             low_battery=40;
                         break;
+
                 #endif
                         
                 #ifdef f042_2s_bl
@@ -1332,6 +1335,7 @@ void osdMenuInit(void)
 
 #ifdef f042_1s_bayang
     displayMenu = createMenu(5,5);
+
 #endif
 
     displayMenuHead = displayMenu;
