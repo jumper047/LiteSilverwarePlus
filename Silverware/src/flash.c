@@ -28,6 +28,7 @@ extern unsigned char crosschair_l;
 extern unsigned char display_name;
 extern unsigned char display_crosschair;
 extern unsigned char low_battery;
+extern unsigned char low_rssi;
 
 extern unsigned char profileAB;
 extern unsigned int ratesValue;
@@ -114,6 +115,7 @@ void flash_save( void) {
     display_flags = (display_crosschair<<1) + display_name;
     writeword(59,display_flags);
     writeword(49,profileAB);
+    writeword(60,low_rssi);
     
     
 #ifdef RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
@@ -266,6 +268,7 @@ void flash_load( void) {
      
      turtle_l = fmc_read(47);
      low_battery = fmc_read(48);
+     low_rssi = fmc_read(60);
      profileAB = fmc_read(49);
      
      // FIXME: may be rearrange numbers later?
@@ -273,6 +276,7 @@ void flash_load( void) {
      crosschair_l = fmc_read(58);
      display_name = 0x1 & fmc_read(59);
      display_crosschair = 0x1 & (fmc_read(59)>>1);
+     
 
  #ifdef RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND  
 extern char rfchannel[4];
