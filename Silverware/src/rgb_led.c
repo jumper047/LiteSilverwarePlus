@@ -8,7 +8,18 @@ extern int rxmode;
 extern int failsafe;
 extern int ledcommand;
 extern char aux[];
+extern char led_color;
 
+// Colors
+#define RGB_VALUE_WHITE RGB( 255, 255, 255)
+#define RGB_VALUE_PINK RGB( 255, 20, 147)
+#define RGB_VALUE_RED RGB( 255, 0, 0)
+#define RGB_VALUE_ORANGE RGB( 255, 165, 0)
+#define RGB_VALUE_YELLOW RGB( 255, 255, 0)
+#define RGB_VALUE_GREEN RGB( 0, 255, 0)
+#define RGB_VALUE_CYAN RGB( 0, 255, 255)
+#define RGB_VALUE_BLUE RGB( 0, 0, 255)
+#define RGB_VALUE_MAGENTA RGB( 255, 0, 255)
 
 // normal flight rgb colour - LED switch ON
 #define RGB_VALUE_INFLIGHT_ON RGB( 255 , 255 , 255 )
@@ -187,10 +198,29 @@ else
 			{
 
 				if ( aux[LEDS_ON] )
-			
-				rgb_led_set_all( RGB_VALUE_INFLIGHT_ON );
-				else 			
-				rgb_led_set_all( RGB_VALUE_INFLIGHT_OFF );
+				  {if(led_color == 0){
+				    rgb_led_set_all( RGB_VALUE_WHITE );
+                                  } else if (led_color == 1) {
+                                    rgb_led_set_all(RGB_VALUE_PINK);
+                                  } else if (led_color == 2) {
+                                    rgb_led_set_all(RGB_VALUE_RED);
+                                  } else if (led_color == 3) {
+                                    rgb_led_set_all(RGB_VALUE_ORANGE);
+                                  } else if (led_color == 4) {
+                                    rgb_led_set_all(RGB_VALUE_YELLOW);
+                                  } else if (led_color == 5) {
+                                    rgb_led_set_all(RGB_VALUE_GREEN);
+                                  } else if (led_color == 6) {
+                                    rgb_led_set_all(RGB_VALUE_CYAN);
+                                  } else if (led_color == 7) {
+                                    rgb_led_set_all(RGB_VALUE_MAGENTA);
+                                  }
+                                  /* } else if (led_color == 8) { */
+				  /*     rgb_ledflash( RGB_VALUE_RED, RGB_VALUE_BLUE, ) */
+                                  /* } */
+                                  /* rgb_led_set_all(RGB_VALUE_INFLIGHT_ON); */
+                                } else
+                                  rgb_led_set_all(RGB_VALUE_INFLIGHT_OFF);
 			}
 		} 		
 		

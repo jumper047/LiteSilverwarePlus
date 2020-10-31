@@ -3,6 +3,7 @@
 #include "drv_time.h"
 #include "math.h"
 #include <stdlib.h>
+#include <name.h>
 
 #define AETR  ((-0.6f > rx[Yaw]) && (0.3f < rx[Throttle]) && (0.7f > rx[Throttle]) && (0.6f < rx[Pitch]) && (-0.3f < rx[Roll]) && (0.3f > rx[Roll]))
 #define toy_AETR  ((-0.6f > rx[Yaw]) && (0.3f > rx[Throttle]) && (0.6f < rx[Pitch]) && (-0.3f < rx[Roll]) && (0.3f > rx[Roll]))
@@ -44,10 +45,16 @@ unsigned char mode_l=21;
 unsigned char vol_l=23;
 unsigned char curr_l = 23;
 unsigned char turtle_l=18;
+unsigned char name_l=3;
+unsigned char crosschair_l=13;
 unsigned char tx_config=0;
 unsigned char mode_config=0;
 unsigned char led_config=0;
+unsigned char led_color=0;
 unsigned char T8SG_config=0;
+unsigned char display_name=0;
+unsigned char display_crosschair=0;
+unsigned char low_rssi=0;
 char motorDir[4] = {0,0,0,0};
 
 #if defined(f042_1s_bl) || defined(f042_1s_bayang) 
@@ -93,6 +100,7 @@ menu_list smartaudioMenu,smartaudioMenuHead;
 menu_list displayMenu,displayMenuHead;
 menu_list ratesMenu,ratesMenuHead;
 menu_list currentMenu;
+
 
 
 uint8_t CRC8(unsigned char *data, const int8_t len)
@@ -148,7 +156,15 @@ void osd_setting()
     if(showcase_cnt < 1610)
     {
         showcase_cnt++;
-        showcase =6;
+        showcase =9;
+    }
+    else if(showcase_cnt < 2610){
+      showcase_cnt++;
+      showcase=6;
+    }
+    else if(showcase_cnt < 3610){
+      showcase_cnt++;
+      showcase=8;
     }
     else if(!showcase_init){
         showcase_init = 1;
@@ -543,7 +559,14 @@ void osd_setting()
                 {
                     led_config = !led_config;
                 }
-                else if(currentMenu->index ==3){
+		else if(currentMenu->index ==3)
+		  {
+		    led_color++;
+		    if(led_color>7){
+		      led_color=0;
+		    }
+		  }
+                else if(currentMenu->index ==4){
                     T8SG_config =!T8SG_config;
                 }
                 else{
@@ -553,7 +576,16 @@ void osd_setting()
                 } 
                 right_flag = 0;
             }
-        
+            if ((rx[Roll] < -0.6f) && left_flag == 1) {
+	      if(currentMenu->index==3){
+		if(led_color==0){
+		  led_color=7;
+		} else{
+		  led_color--;
+		}
+	      }
+	      left_flag = 0;
+            }
             if(osd_count >= 200)
             {
                 osd_data[0] =0x0f;
@@ -563,7 +595,7 @@ void osd_setting()
                 osd_data[3] = mode_config;
                 osd_data[4] = led_config;
                 osd_data[5] = T8SG_config;
-                osd_data[6] = 0;
+                osd_data[6] = led_color;
                 osd_data[7] = 0;
                 osd_data[8] = 0;
                 osd_data[9] = 0;
@@ -776,36 +808,39 @@ void osd_setting()
                 switch(currentMenu->index)
                 {
                     case 0:
-                        low_bat_l++;
-                        if(low_bat_l>32)
-                            low_bat_l=0;
-                        break;
-                    
+                        showcase = 8;
+  		      displayMenu = displayMenuHead;
+		      currentMenu = displayMenuHead;
+		      break;
+
                     case 1:
-                        mode_l++;
-                        if(mode_l>32)
-                            mode_l=0;
-                        break;
+		      // display name
+  		      display_name = !display_name;
+		      break;
                     
                     case 2:
-                        vol_l++;
-                        if(vol_l>32)
-                            vol_l=0;
-                        break;
-                #ifdef f042_1s_bayang
+		      display_crosschair = !display_crosschair;
+		      break;
+
                     case 3:
                         low_battery++;
                         if(low_battery>40)
                             low_battery=28;
                         break;
-                        
+
                     case 4:
+                        low_rssi = low_rssi + 5;
+                        if(low_rssi>95){
+			  low_rssi=0;
+			}
+		      break;
+
+                    case 5:
                         showcase = 1;
                         displayMenu = displayMenuHead;
                         currentMenu = setMenuHead;
-                        break;  
-                        
-                #endif
+                        break;
+
                 #ifdef f042_1s_bl
                     case 3:
                         turtle_l++;
@@ -859,33 +894,29 @@ void osd_setting()
             {
                 switch(currentMenu->index)
                 {
-                    case 0:
-                        if(low_bat_l==0)
-                            low_bat_l=32;
-                        else
-                            low_bat_l--;
-                        break;
-                    
+
                     case 1:
-                        if(mode_l==0)
-                            mode_l=32;
-                        else
-                            mode_l--;
-                        break;
+		      // display name
+  		      display_name = !display_name;
+		      break;
                     
                     case 2:
-                        if(vol_l==0)
-                            vol_l=32;
-                        else
-                            vol_l--;
-                        break;
-                #ifdef f042_1s_bayang
+		      display_crosschair = !display_crosschair;
+		      break;
+
                     case 3:
                         low_battery--;
                         if(low_battery<28)
                             low_battery=40;
                         break;
-                #endif
+
+                    case 4:
+                        low_rssi = low_rssi - 5;
+                        if (low_rssi < 5) {
+                          low_rssi = 95;
+                        }
+                      break;
+
                 #ifdef f042_1s_bl
                     case 3:
                         if(turtle_l==0)
@@ -931,18 +962,15 @@ void osd_setting()
                 osd_data[0] =0x0f;
                 osd_data[0] |=showcase << 4;
                 osd_data[1] = currentMenu->index;
-                osd_data[2] = low_bat_l;
-                osd_data[3] = mode_l;
-                osd_data[4] = vol_l;
-                osd_data[5] = 0;
-            #ifdef f042_2s_bl
-                osd_data[5] = curr_l;
-            #endif
-                osd_data[6] = turtle_l;
-                osd_data[7] = low_battery;
+                osd_data[2] = display_name;
+                osd_data[3] = display_crosschair;
+                osd_data[4] = low_battery;;
+                osd_data[5] = low_rssi;
+                osd_data[6] = 0;
+                osd_data[7] = 0;
                 osd_data[8] = 0;
                 osd_data[9] = 0;
-                osd_data[10] = 0;
+		osd_data[10] = 0;
                 osd_data[11] = 0;
                 for (uint8_t i = 0; i < 11; i++)
                     osd_data[11] += osd_data[i];  
@@ -1019,7 +1047,225 @@ void osd_setting()
                 UART2_DMA_Send();
                 osd_count = 0;
             }
-            break;    
+            break;
+
+        case 8:
+	  // Disposition menu
+            getIndex();
+        
+            if((rx[Roll] > 0.6f) && right_flag == 1)
+            {
+                switch(currentMenu->index)
+                {
+                    case 0:
+                        low_bat_l++;
+                        if(low_bat_l>32)
+                            low_bat_l=0;
+                        break;
+                    
+                    case 1:
+                        mode_l++;
+                        if(mode_l>32)
+                            mode_l=0;
+                        break;
+                    
+                    case 2:
+                        vol_l++;
+                        if(vol_l>32)
+                            vol_l=0;
+                        break;
+                    case 3:
+		      // name position
+                        name_l++;
+                        if(name_l>32)
+                            name_l=0;
+                        break;
+
+                    case 4:
+		      // crosschair position
+                        crosschair_l++;
+                        if(crosschair_l>32)
+                            crosschair_l=0;
+                        break;
+
+                    case 5:
+                        showcase = 6;
+                        displayMenu = displayMenuHead;
+                        currentMenu = displayMenuHead;
+                        break;
+                        
+                #ifdef f042_1s_bl
+                    case 3:
+                        turtle_l++;
+                        if(turtle_l>32)
+                            turtle_l=0;
+                        break;
+                    
+                    case 4:
+                        low_battery++;
+                        if(low_battery>40)
+                            low_battery=28;
+                        break;
+                        
+                    case 5:
+                        showcase = 1;
+                        displayMenu = displayMenuHead;
+                        currentMenu = setMenuHead;
+                        break;  
+                 #endif
+                    
+                 #ifdef f042_2s_bl
+                    case 3:
+                        curr_l++;
+                        if(curr_l>32)
+                            curr_l=0;
+                        break;
+                    
+                    case 4:
+                        turtle_l++;
+                        if(turtle_l>32)
+                            turtle_l=0;
+                        break;
+                    
+                    case 5:
+                        low_battery++;
+                        if(low_battery>80)
+                            low_battery=55;
+                        break;
+                        
+                    case 6:
+                        showcase = 1;
+                        displayMenu = displayMenuHead;
+                        currentMenu = setMenuHead;
+                        break; 
+                #endif
+                    
+                }
+                right_flag = 0;
+            }
+            if((rx[Roll] < -0.6f) && left_flag == 1)
+            {
+                switch(currentMenu->index)
+                {
+                    case 0:
+                        if(low_bat_l==0)
+                            low_bat_l=32;
+                        else
+                            low_bat_l--;
+                        break;
+                    
+                    case 1:
+                        if(mode_l==0)
+                            mode_l=32;
+                        else
+                            mode_l--;
+                        break;
+                    
+                    case 2:
+                        if(vol_l==0)
+                            vol_l=32;
+                        else
+                            vol_l--;
+                        break;
+                    case 3:
+		      // name position
+                        if(name_l==0)
+                            name_l=32;
+			else
+			  name_l--;
+                        break;
+
+                    case 4:
+		      // crosschair position
+                        crosschair_l++;
+                        if(crosschair_l>32)
+                            crosschair_l=0;
+                        break;
+
+                #ifdef f042_1s_bl
+                    case 3:
+                        if(turtle_l==0)
+                            turtle_l=32;
+                        else
+                            turtle_l--;
+                        break;
+                    
+                    case 4:
+                        low_battery--;
+                        if(low_battery<28)
+                            low_battery=40;
+                        break;
+                #endif
+                        
+                #ifdef f042_2s_bl
+                    case 3:
+                        if(curr_l==0)
+                            curr_l=32;
+                        else
+                            curr_l--;
+                        break;
+                    
+                    case 4:
+                        if(turtle_l==0)
+                            turtle_l=32;
+                        else
+                            turtle_l--;
+                        break;
+                    
+                    case 5:
+                        low_battery--;
+                        if(low_battery<55)
+                            low_battery=80;
+                        break;
+                #endif
+                }
+                
+                left_flag = 0;
+            }
+            if(osd_count >= 200)
+            {
+                osd_data[0] =0x0f;
+                osd_data[0] |=showcase << 4;
+                osd_data[1] = currentMenu->index;
+                osd_data[2] = low_bat_l;
+                osd_data[3] = mode_l;
+                osd_data[4] = vol_l;
+                osd_data[5] = 0;
+            #ifdef f042_2s_bl
+                osd_data[5] = curr_l;
+            #endif
+                osd_data[6] = turtle_l;
+                osd_data[7] = name_l;
+                osd_data[8] = crosschair_l;
+                osd_data[9] = 0;
+		osd_data[10] = 0;
+                osd_data[11] = 0;
+                for (uint8_t i = 0; i < 11; i++)
+                    osd_data[11] += osd_data[i];  
+                
+                UART2_DMA_Send();
+                osd_count = 0;
+            }
+            break;
+
+    case 9:
+      // send name to osd
+            if(osd_count >= 200)
+            {
+      osd_data[0] = 0x0f;
+      osd_data[0] |= showcase << 4;
+      for (uint8_t i = 1; i < 11; i++)
+	{
+	  osd_data[i] = name[i-1];
+	}
+      osd_data[11] = 0;
+      for (uint8_t i = 0; i < 11; i++)
+        osd_data[11] += osd_data[i];
+
+      UART2_DMA_Send();
+      osd_count = 0;
+            }
+      break;
         default:
             break;
     }
@@ -1027,7 +1273,7 @@ void osd_setting()
 
 menu_list createMenu(char len,char item)
 {
-    char i = 0;
+      char i = 0;
     menu_list pTail = NULL,p_new = NULL;
     menu_list pHead = (menu_list)malloc(sizeof(menu_node));
     if(NULL == pHead)
@@ -1085,7 +1331,7 @@ void osdMenuInit(void)
 #endif
 
 #ifdef f042_1s_bayang
-    displayMenu = createMenu(4,5);
+    displayMenu = createMenu(5,5);
 #endif
 
     displayMenuHead = displayMenu;

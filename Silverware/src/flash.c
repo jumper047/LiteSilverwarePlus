@@ -23,7 +23,13 @@ extern unsigned char mode_l;
 extern unsigned char vol_l;
 extern unsigned char curr_l;
 extern unsigned char turtle_l;
+extern unsigned char name_l;
+extern unsigned char crosschair_l;
+extern unsigned char display_name;
+extern unsigned char display_crosschair;
 extern unsigned char low_battery;
+extern unsigned char low_rssi;
+extern unsigned char led_color;
 
 extern unsigned char profileAB;
 extern unsigned int ratesValue;
@@ -35,6 +41,7 @@ int save_motor_dir_identifier;
 float initial_pid_identifier = -10;
 float saved_pid_identifier;
 char save_motor_dir_temp[4] = {0};
+unsigned char display_flags=0;
 
 float flash_get_hard_coded_pid_identifier( void) {
 	float result = 0;
@@ -89,6 +96,7 @@ void flash_save( void) {
     writeword(39,T8SG_config);
     writeword(40,tx_config);
     writeword(41,mode_config);
+    writeword(61,led_color);
 #else 
     writeword(40,(motorDir[0]|motorDir[1]|motorDir[2]|motorDir[3]));
     writeword(41, motorDir[0] | (motorDir[1]<<8) |(motorDir[2]<<16) |(motorDir[3]<<24));
@@ -104,7 +112,12 @@ void flash_save( void) {
 
     writeword(47,turtle_l);
     writeword(48,low_battery);
+    writeword(57,name_l);
+    writeword(58,crosschair_l);
+    display_flags = (display_crosschair<<1) + display_name;
+    writeword(59,display_flags);
     writeword(49,profileAB);
+    writeword(60,low_rssi);
     
     
 #ifdef RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
@@ -229,6 +242,7 @@ void flash_load( void) {
      if(tx_config>1)
          tx_config=0;
      mode_config = fmc_read(41);
+     led_color = fmc_read(61);
 #else
      save_motor_dir_identifier =  fmc_read(40);
      
@@ -257,8 +271,16 @@ void flash_load( void) {
      
      turtle_l = fmc_read(47);
      low_battery = fmc_read(48);
+     low_rssi = fmc_read(60);
      profileAB = fmc_read(49);
      
+     // FIXME: may be rearrange numbers later?
+     name_l = fmc_read(57);
+     crosschair_l = fmc_read(58);
+     display_name = 0x1 & fmc_read(59);
+     display_crosschair = 0x1 & (fmc_read(59)>>1);
+     
+
  #ifdef RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND  
 extern char rfchannel[4];
 extern char rxaddress[5];
