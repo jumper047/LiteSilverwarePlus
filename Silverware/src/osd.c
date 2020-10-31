@@ -1152,9 +1152,10 @@ void osd_setting()
                         break;
                     case 3:
 		      // name position
-                        name_l++;
-                        if(name_l>32)
-                            name_l=0;
+                        if(name_l==0)
+                            name_l=32;
+			else
+			  name_l--;
                         break;
 
                     case 4:
