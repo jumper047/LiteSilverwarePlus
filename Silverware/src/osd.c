@@ -50,6 +50,7 @@ unsigned char crosschair_l=13;
 unsigned char tx_config=0;
 unsigned char mode_config=0;
 unsigned char led_config=0;
+unsigned char led_color=0;
 unsigned char T8SG_config=0;
 unsigned char display_name=0;
 unsigned char display_crosschair=0;
@@ -558,7 +559,14 @@ void osd_setting()
                 {
                     led_config = !led_config;
                 }
-                else if(currentMenu->index ==3){
+		else if(currentMenu->index ==3)
+		  {
+		    led_color++;
+		    if(led_color>7){
+		      led_color=0;
+		    }
+		  }
+                else if(currentMenu->index ==4){
                     T8SG_config =!T8SG_config;
                 }
                 else{
@@ -568,7 +576,16 @@ void osd_setting()
                 } 
                 right_flag = 0;
             }
-        
+            if ((rx[Roll] < -0.6f) && left_flag == 1) {
+	      if(currentMenu->index==3){
+		if(led_color==0){
+		  led_color=7;
+		} else{
+		  led_color--;
+		}
+	      }
+	      left_flag = 0;
+            }
             if(osd_count >= 200)
             {
                 osd_data[0] =0x0f;
@@ -578,7 +595,7 @@ void osd_setting()
                 osd_data[3] = mode_config;
                 osd_data[4] = led_config;
                 osd_data[5] = T8SG_config;
-                osd_data[6] = 0;
+                osd_data[6] = led_color;
                 osd_data[7] = 0;
                 osd_data[8] = 0;
                 osd_data[9] = 0;

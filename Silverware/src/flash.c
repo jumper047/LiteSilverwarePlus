@@ -29,6 +29,7 @@ extern unsigned char display_name;
 extern unsigned char display_crosschair;
 extern unsigned char low_battery;
 extern unsigned char low_rssi;
+extern unsigned char led_color;
 
 extern unsigned char profileAB;
 extern unsigned int ratesValue;
@@ -95,6 +96,7 @@ void flash_save( void) {
     writeword(39,T8SG_config);
     writeword(40,tx_config);
     writeword(41,mode_config);
+    writeword(61,led_color);
 #else 
     writeword(40,(motorDir[0]|motorDir[1]|motorDir[2]|motorDir[3]));
     writeword(41, motorDir[0] | (motorDir[1]<<8) |(motorDir[2]<<16) |(motorDir[3]<<24));
@@ -240,6 +242,7 @@ void flash_load( void) {
      if(tx_config>1)
          tx_config=0;
      mode_config = fmc_read(41);
+     led_color = fmc_read(61);
 #else
      save_motor_dir_identifier =  fmc_read(40);
      
