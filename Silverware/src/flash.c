@@ -24,9 +24,9 @@ extern unsigned char vol_l;
 extern unsigned char curr_l;
 extern unsigned char turtle_l;
 extern unsigned char name_l;
-extern unsigned char crosschair_l;
+extern unsigned char crosshair_l;
 extern unsigned char display_name;
-extern unsigned char display_crosschair;
+extern unsigned char display_crosshair;
 extern unsigned char low_battery;
 extern unsigned char low_rssi;
 extern unsigned char led_color;
@@ -113,8 +113,8 @@ void flash_save( void) {
     writeword(47,turtle_l);
     writeword(48,low_battery);
     writeword(57,name_l);
-    writeword(58,crosschair_l);
-    display_flags = (display_crosschair<<1) + display_name;
+    writeword(58,crosshair_l);
+    display_flags = (display_crosshair<<1) + display_name;
     writeword(59,display_flags);
     writeword(49,profileAB);
     writeword(60,low_rssi);
@@ -276,9 +276,9 @@ void flash_load( void) {
      
      // FIXME: may be rearrange numbers later?
      name_l = fmc_read(57);
-     crosschair_l = fmc_read(58);
+     crosshair_l = fmc_read(58);
      display_name = 0x1 & fmc_read(59);
-     display_crosschair = 0x1 & (fmc_read(59)>>1);
+     display_crosshair = 0x1 & (fmc_read(59)>>1);
      
 
  #ifdef RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND  

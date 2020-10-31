@@ -123,12 +123,12 @@
 #define ARMING CHAN_5
 #define IDLE_UP CHAN_5
 #define LEVELMODE CHAN_6
-#define RACEMODE  CHAN_7
-#define HORIZON   CHAN_8
+#define RACEMODE  CHAN_10
+#define HORIZON   CHAN_9
 #define PIDPROFILE CHAN_OFF                //For switching stickAccelerator & stickTransition profiles on pid.c page
 #define RATES CHAN_ON
-#define LEDS_ON CHAN_10
-#define HIDEOSD CHAN_9                     //for disabling the OSD (with appropriate OSD firmware flashed)
+#define LEDS_ON CHAN_8
+#define HIDEOSD CHAN_7                     //for disabling the OSD (with appropriate OSD firmware flashed)
 
 #define Roll     0   
 #define Pitch    1   

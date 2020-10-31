@@ -46,14 +46,14 @@ unsigned char vol_l=23;
 unsigned char curr_l = 23;
 unsigned char turtle_l=18;
 unsigned char name_l=3;
-unsigned char crosschair_l=13;
+unsigned char crosshair_l=13;
 unsigned char tx_config=0;
 unsigned char mode_config=0;
 unsigned char led_config=0;
 unsigned char led_color=0;
 unsigned char T8SG_config=0;
 unsigned char display_name=0;
-unsigned char display_crosschair=0;
+unsigned char display_crosshair=0;
 unsigned char low_rssi=0;
 char motorDir[4] = {0,0,0,0};
 
@@ -562,7 +562,7 @@ void osd_setting()
 		else if(currentMenu->index ==3)
 		  {
 		    led_color++;
-		    if(led_color>7){
+		    if(led_color>8){
 		      led_color=0;
 		    }
 		  }
@@ -579,7 +579,7 @@ void osd_setting()
             if ((rx[Roll] < -0.6f) && left_flag == 1) {
 	      if(currentMenu->index==3){
 		if(led_color==0){
-		  led_color=7;
+		  led_color=8;
 		} else{
 		  led_color--;
 		}
@@ -819,7 +819,7 @@ void osd_setting()
 		      break;
                     
                     case 2:
-		      display_crosschair = !display_crosschair;
+		      display_crosshair = !display_crosshair;
 		      break;
 
                     case 3:
@@ -902,7 +902,7 @@ void osd_setting()
 		      break;
                     
                     case 2:
-		      display_crosschair = !display_crosschair;
+		      display_crosshair = !display_crosshair;
 		      break;
 
                     case 3:
@@ -966,7 +966,7 @@ void osd_setting()
                 osd_data[0] |=showcase << 4;
                 osd_data[1] = currentMenu->index;
                 osd_data[2] = display_name;
-                osd_data[3] = display_crosschair;
+                osd_data[3] = display_crosshair;
                 osd_data[4] = low_battery;;
                 osd_data[5] = low_rssi;
                 osd_data[6] = 0;
@@ -1085,10 +1085,10 @@ void osd_setting()
                         break;
 
                     case 4:
-		      // crosschair position
-                        crosschair_l++;
-                        if(crosschair_l>32)
-                            crosschair_l=0;
+		      // crosshair position
+                        crosshair_l++;
+                        if(crosshair_l>32)
+                            crosshair_l=0;
                         break;
 
                     case 5:
@@ -1179,10 +1179,10 @@ void osd_setting()
                         break;
 
                     case 4:
-		      // crosschair position
-                        crosschair_l++;
-                        if(crosschair_l>32)
-                            crosschair_l=0;
+		      // crosshair position
+                        crosshair_l++;
+                        if(crosshair_l>32)
+                            crosshair_l=0;
                         break;
 
                 #ifdef f042_1s_bl
@@ -1239,7 +1239,7 @@ void osd_setting()
             #endif
                 osd_data[6] = turtle_l;
                 osd_data[7] = name_l;
-                osd_data[8] = crosschair_l;
+                osd_data[8] = crosshair_l;
                 osd_data[9] = 0;
 		osd_data[10] = 0;
                 osd_data[11] = 0;
@@ -1316,7 +1316,7 @@ void osdMenuInit(void)
     pidMenu = createMenu(9,1);
     pidMenuHead = pidMenu;
     
-    motorMenu = createMenu(4,2);
+    motorMenu = createMenu(5,2);
     motorMenuHead = motorMenu;
     
     receiverMenu = createMenu(0,3);
