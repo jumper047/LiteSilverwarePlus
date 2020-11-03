@@ -35,6 +35,8 @@ extern unsigned char profileAB;
 extern unsigned int ratesValue;
 extern unsigned int ratesValueYaw;
 
+extern unsigned char name[12];
+
 #define FMC_HEADER 0x12AA0001
 
 int save_motor_dir_identifier;
@@ -118,6 +120,9 @@ void flash_save( void) {
     writeword(59,display_flags);
     writeword(49,profileAB);
     writeword(60,low_rssi);
+     for(int i=0;i<13;i++){
+       writeword(62+i, name[i]);
+     }
     
     
 #ifdef RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
@@ -279,6 +284,11 @@ void flash_load( void) {
      crosshair_l = fmc_read(58);
      display_name = 0x1 & fmc_read(59);
      display_crosshair = 0x1 & (fmc_read(59)>>1);
+     
+     for(int i=0;i<13;i++){
+       name[i] = fmc_read(62+i);
+     }
+
      
 
  #ifdef RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND  

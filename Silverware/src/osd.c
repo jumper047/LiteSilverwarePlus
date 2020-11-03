@@ -3,7 +3,7 @@
 #include "drv_time.h"
 #include "math.h"
 #include <stdlib.h>
-#include <name.h>
+//#include <name.h>
 
 #define AETR  ((-0.6f > rx[Yaw]) && (0.3f < rx[Throttle]) && (0.7f > rx[Throttle]) && (0.6f < rx[Pitch]) && (-0.3f < rx[Roll]) && (0.3f > rx[Roll]))
 #define toy_AETR  ((-0.6f > rx[Yaw]) && (0.3f > rx[Throttle]) && (0.6f < rx[Pitch]) && (-0.3f < rx[Roll]) && (0.3f > rx[Roll]))
@@ -57,6 +57,8 @@ unsigned char display_crosshair=0;
 unsigned char low_rssi=0;
 char motorDir[4] = {0,0,0,0};
 
+unsigned char name[9] = {0};
+
 #if defined(f042_1s_bl) || defined(f042_1s_bayang) 
 unsigned char low_battery=33;
 #endif
@@ -92,12 +94,15 @@ char up_flag = 0;
 char right_flag = 0;
 char left_flag = 0;
 
+char current_index = 0;
+char max_index = 0;
+char switch_flag = 0;
+
 menu_list setMenu,setMenuHead;
 menu_list pidMenu,pidMenuHead;
 menu_list motorMenu,motorMenuHead;
 menu_list receiverMenu,receiverMenuHead;
 menu_list smartaudioMenu,smartaudioMenuHead;
-menu_list displayMenu,displayMenuHead;
 menu_list ratesMenu,ratesMenuHead;
 menu_list currentMenu;
 
@@ -125,17 +130,30 @@ uint8_t CRC8(unsigned char *data, const int8_t len)
 }
 #ifdef Lite_OSD
 
-void getIndex()
+// Get index for vertical oriented menu
+// Index changed by stick up/down
+void getVertMenuIndex()
 {
     if((rx[Pitch] < -0.6f) && (down_flag == 1))
     {
         currentMenu = currentMenu->next;
+	if (current_index == max_index){
+	  current_index = 0;
+	} else{
+	  current_index++;
+	}
         down_flag = 0;
     }		
     
     if((rx[Pitch] > 0.6f) && (up_flag == 1))
     {
         currentMenu = currentMenu->prior;
+	if (current_index == 0){
+	  current_index = max_index;
+	} else{
+	  current_index--;
+	}
+
         up_flag = 0;
     }
     
@@ -150,6 +168,45 @@ void getIndex()
         left_flag = 1;
     }
 }
+
+// Get index for horizontal oriented menu
+// Index changed by stick up/down
+// This function does'nt touched currentMenu,
+// only current_index
+void getHorizMenuIndex()
+{
+    if((rx[Roll] < -0.6f) && (left_flag == 1))
+    {
+	if (current_index == 0){
+	  current_index = max_index;
+	} else{
+	  current_index--;
+	}
+        left_flag = 0;
+    }		
+    
+    if((rx[Roll] > 0.6f) && (right_flag == 1))
+    {
+	if (current_index == max_index){
+	  current_index = 0;
+	} else{
+	  current_index++;
+	}
+        right_flag = 0;
+    }
+    
+    if((rx[Pitch]) < 0.6f && (rx[Pitch] > -0.6f))
+    {
+        up_flag = 1;
+        down_flag = 1;
+    }
+    if((rx[Roll]) < 0.6f && (rx[Roll] > -0.6f))
+    {
+        right_flag = 1;
+        left_flag = 1;
+    }
+}
+
 
 void osd_setting()
 {
@@ -369,7 +426,7 @@ void osd_setting()
             break;
         #endif
         case 1:
-            getIndex();
+            getVertMenuIndex();
             if((rx[Roll] > 0.6f) && right_flag == 1)
             {
                 switch(currentMenu->index)
@@ -391,8 +448,9 @@ void osd_setting()
                         showcase = 5;
                         break; 
                     case 4:
-                        currentMenu = displayMenuHead;
+		      // Display menu
                         showcase = 6;
+			switch_flag = 1;
                         break;
                     case 5:
                         currentMenu = ratesMenuHead;
@@ -450,7 +508,7 @@ void osd_setting()
             break;
         
         case 2:
-            getIndex();
+            getVertMenuIndex();
             
             if((rx[Roll] > 0.6f) && right_flag == 1)
             {
@@ -469,7 +527,7 @@ void osd_setting()
                     for(a=0;a<3;a++)
                     {
                         pidki[a] = pidMenu->fvalue;
-                        pidMenu = pidMenu->next;
+                        pidMenu = pidMenu->next; 
                     }
                     
                     for(a=0;a<3;a++)
@@ -541,7 +599,7 @@ void osd_setting()
             break;
      #ifdef f042_1s_bayang
         case 3:            
-            getIndex();
+            getVertMenuIndex();
         
             if((rx[Roll] > 0.6f) && right_flag == 1)
             {
@@ -651,7 +709,7 @@ void osd_setting()
             break;
         #endif
         case 4:
-            getIndex();
+            getVertMenuIndex();
             
             if((rx[Roll] > 0.6f) && right_flag == 1)
             {
@@ -687,7 +745,7 @@ void osd_setting()
             break;
         
         case 5:
-            getIndex();
+            getVertMenuIndex();
             
             if((rx[Roll] > 0.6f) && right_flag == 1)
             {
@@ -801,43 +859,53 @@ void osd_setting()
             break;
            
         case 6:
-            getIndex();
+
+	  if(switch_flag){
+	    switch_flag = 0;
+	    current_index = 0;
+	    max_index = 6;
+	  }
+
+	  getVertMenuIndex();
         
             if((rx[Roll] > 0.6f) && right_flag == 1)
             {
-                switch(currentMenu->index)
+                switch(current_index)
                 {
                     case 0:
-                        showcase = 8;
-  		      displayMenu = displayMenuHead;
-		      currentMenu = displayMenuHead;
+                      showcase = 8;
+		      switch_flag = 1;
 		      break;
 
                     case 1:
+		      showcase = 9;
+		      switch_flag = 1;
+		      break;
+
+                    case 2:
 		      // display name
   		      display_name = !display_name;
 		      break;
                     
-                    case 2:
+                    case 3:
 		      display_crosshair = !display_crosshair;
 		      break;
 
-                    case 3:
+                    case 4:
                         low_battery++;
                         if(low_battery>40)
                             low_battery=28;
                         break;
 
-                    case 4:
+                    case 5:
                         low_rssi = low_rssi + 5;
                         if(low_rssi>95){
 			  low_rssi=0;
 			}
 		      break;
 
-                    case 5:
+                    case 6:
                         showcase = 1;
-                        displayMenu = displayMenuHead;
                         currentMenu = setMenuHead;
                         break;
 
@@ -896,22 +964,22 @@ void osd_setting()
                 switch(currentMenu->index)
                 {
 
-                    case 1:
+                    case 2:
 		      // display name
   		      display_name = !display_name;
 		      break;
                     
-                    case 2:
+                    case 3:
 		      display_crosshair = !display_crosshair;
 		      break;
 
-                    case 3:
+                    case 4:
                         low_battery--;
                         if(low_battery<28)
                             low_battery=40;
                         break;
 
-                    case 4:
+                    case 5:
                         low_rssi = low_rssi - 5;
                         if (low_rssi < 5) {
                           low_rssi = 95;
@@ -964,7 +1032,7 @@ void osd_setting()
             {
                 osd_data[0] =0x0f;
                 osd_data[0] |=showcase << 4;
-                osd_data[1] = currentMenu->index;
+                osd_data[1] = current_index;
                 osd_data[2] = display_name;
                 osd_data[3] = display_crosshair;
                 osd_data[4] = low_battery;;
@@ -984,7 +1052,7 @@ void osd_setting()
             break;
         
         case 7:
-            getIndex();
+            getVertMenuIndex();
         
             if((rx[Roll] > 0.6f) && right_flag == 1)
             {
@@ -1054,11 +1122,18 @@ void osd_setting()
 
         case 8:
 	  // Disposition menu
-            getIndex();
+
+	  if (switch_flag){
+	    current_index = 0;
+	    max_index = 5;
+	    switch_flag = 0;
+	  }
+
+            getVertMenuIndex();
         
             if((rx[Roll] > 0.6f) && right_flag == 1)
             {
-                switch(currentMenu->index)
+                switch(current_index)
                 {
                     case 0:
                         low_bat_l++;
@@ -1093,8 +1168,7 @@ void osd_setting()
 
                     case 5:
                         showcase = 6;
-                        displayMenu = displayMenuHead;
-                        currentMenu = displayMenuHead;
+			switch_flag = 1;
                         break;
                         
                 #ifdef f042_1s_bl
@@ -1252,21 +1326,106 @@ void osd_setting()
             break;
 
     case 9:
-      // send name to osd
-            if(osd_count >= 200)
+	  // Name menu
+      if(switch_flag){
+	current_index = 0;
+	max_index = 9;
+	switch_flag = 0;
+      }
+      
+            getHorizMenuIndex();
+            if((rx[Pitch] < -0.6f) && down_flag == 1)
             {
-      osd_data[0] = 0x0f;
-      osd_data[0] |= showcase << 4;
-      for (uint8_t i = 1; i < 11; i++)
-	{
-	  osd_data[i] = name[i-1];
-	}
-      osd_data[11] = 0;
-      for (uint8_t i = 0; i < 11; i++)
-        osd_data[11] += osd_data[i];
+              switch (current_index) {
+	      case 0:
+	      case 1:
+	      case 2:
+	      case 3:
+	      case 4:
+	      case 5:
+	      case 6:
+	      case 7:
+	      case 8:
+		//	      case 9:
+		//	      case 10:
+		//	      case 11:
+		if (name[current_index]==27){
+		  name[current_index]=0;
+		} else{
+		  name[current_index] = name[current_index] + 1;
+		}
+		break;
+	      case 9:
+		//back
+		showcase = 6;
+		switch_flag = 1;
+		break;
+	      }
+	    down_flag = 0;
+            }
 
-      UART2_DMA_Send();
-      osd_count = 0;
+            if ((rx[Pitch] > 0.6f) && up_flag == 1) {
+              switch (current_index) {
+	      case 0:
+	      case 1:
+	      case 2:
+	      case 3:
+	      case 4:
+	      case 5:
+	      case 6:
+	      case 7:
+	      case 8:
+	      /* case 9: */
+	      /* case 10: */
+	      /* case 11: */
+		if (name[current_index]==0){
+		  name[current_index]=27;
+		} else{
+		  name[current_index] = name[current_index] - 1;
+		}
+		break;
+	      case 9:
+		//back
+		showcase = 6;
+		switch_flag = 1;
+		break;
+	      }
+              up_flag = 0;
+            }
+
+            // send name to osd
+            if (osd_count >= 200) {
+              osd_data[0] = 0x0f;
+              osd_data[0] |= showcase << 4;
+	      osd_data[1] = current_index;
+
+	      /* uint8_t i=0; */
+	      /* uint8_t k=2; */
+	      /* uint8_t order=0; */
+	      /* osd_data[2] = 0; */
+
+	      /* while(i < 13){ */
+	      /* 	for(uint8_t count = 0; count < 6; count++){ */
+	      /* 	  osd_data[k] = osd_data[k] + (((name[i] >> count) & 0x01) << order); */
+	      /* 	  order++; */
+              /*     if (order > 7) { */
+              /*       order = 0; */
+              /*       k++; */
+	      /* 	    osd_data[k] = 0; */
+              /*     } */
+              /*   } */
+              /*   i++; */
+              /* } */
+	      for(uint8_t i=0;i<9;i++){
+		osd_data[i+2] = name[i];
+	      }
+
+              osd_data[11] = 0;
+              for (uint8_t i = 0; i < 11; i++)
+                osd_data[11] += osd_data[i];
+
+              UART2_DMA_Send();
+              osd_count = 0;
             }
       break;
         default:
@@ -1334,11 +1493,11 @@ void osdMenuInit(void)
 #endif
 
 #ifdef f042_1s_bayang
-    displayMenu = createMenu(5,5);
+    /* displayMenu = createMenu(5,5); */
 
 #endif
 
-    displayMenuHead = displayMenu;
+    /* displayMenuHead = displayMenu; */
     
     ratesMenu = createMenu(3,6);
     ratesMenuHead = ratesMenu;

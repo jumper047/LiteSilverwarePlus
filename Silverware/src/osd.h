@@ -23,7 +23,9 @@ void osdMenuInit(void);
 
 void osd_setting(void);
 
-void getIndex(void);
+void getVertMenuIndex(void);
+
+void getHorizMenuIndex(void);
 
 uint8_t CRC8(unsigned char *data, const int8_t len);
 
