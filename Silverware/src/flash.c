@@ -37,6 +37,18 @@ extern unsigned int ratesValueYaw;
 
 extern unsigned char name[12];
 
+#ifdef OSD_CHANNELS_SETTINGS
+extern unsigned char arming_ch;
+extern unsigned char idle_up_ch;
+extern unsigned char levelmode_ch;
+extern unsigned char racemode_ch;
+extern unsigned char horizon_ch;
+extern unsigned char pidprofile_ch;
+extern unsigned char rates_ch;
+extern unsigned char leds_on_ch;
+extern unsigned char hideosd_ch;
+#endif
+
 #define FMC_HEADER 0x12AA0001
 
 int save_motor_dir_identifier;
@@ -120,9 +132,20 @@ void flash_save( void) {
     writeword(59,display_flags);
     writeword(49,profileAB);
     writeword(60,low_rssi);
-     for(int i=0;i<13;i++){
+ 
+    for(int i=0;i<13;i++){
        writeword(62+i, name[i]);
      }
+
+    writeword(75, arming_ch);
+    writeword(76, idle_up_ch);
+    writeword(77, levelmode_ch);
+    writeword(78, racemode_ch);
+    writeword(79, horizon_ch);
+    writeword(80, pidprofile_ch);
+    writeword(81, rates_ch);
+    writeword(82, leds_on_ch);
+    writeword(83, hideosd_ch);
     
     
 #ifdef RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
@@ -289,7 +312,17 @@ void flash_load( void) {
        name[i] = fmc_read(62+i);
      }
 
-     
+#ifdef OSD_CHANNELS_SETTINGS     
+     arming_ch = fmc_read(75);
+     idle_up_ch = fmc_read(76);
+     levelmode_ch = fmc_read(77);
+     racemode_ch = fmc_read(78);
+     horizon_ch = fmc_read(79);
+     pidprofile_ch = fmc_read(80);
+     rates_ch = fmc_read(81);
+     leds_on_ch = fmc_read(82);
+     hideosd_ch = fmc_read(83);
+#endif
 
  #ifdef RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND  
 extern char rfchannel[4];

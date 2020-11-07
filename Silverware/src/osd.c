@@ -83,6 +83,19 @@ unsigned long blinktime=0;
 unsigned char show_rx_name=0;
 #endif
 
+#ifdef OSD_CHANNELS_SETTINGS
+unsigned char chan[8] = {CHAN_OFF, CHAN_ON, CHAN_5, CHAN_6, CHAN_7, CHAN_8, CHAN_9, CHAN_10};
+unsigned char arming_ch = 3;
+unsigned char idle_up_ch = 3;
+unsigned char levelmode_ch = 4;
+unsigned char racemode_ch = 8;
+unsigned char horizon_ch = 7;
+unsigned char pidprofile_ch = 0;
+unsigned char rates_ch = 1;
+unsigned char leds_on_ch = 8;
+unsigned char hideosd_ch = 0;
+#endif
+
 unsigned int ratesValue=860;
 unsigned int ratesValueYaw = 500;
 
@@ -265,7 +278,11 @@ void osd_setting()
                     osd_data[0] = 0x0f;
                     osd_data[0] |=showcase << 4;
                     osd_data[1] = aux[ARMING];
+#ifndef OSD_CHANNELS_SETTINGS		    
                     osd_data[2] = aux[HIDEOSD];
+#else
+		    osd_data[2] = aux[chan[hideosd_ch]];
+#endif		    
                     osd_data[3] = vol >> 8;
                     osd_data[4] = vol & 0xFF;
                     osd_data[5] = rx_switch;
@@ -327,7 +344,11 @@ void osd_setting()
                     osd_data[0] = 0x0f;
                     osd_data[0] |=showcase << 4;
                     osd_data[1] = aux[ARMING];
+#ifndef OSD_CHANNELS_SETTINGS		    
                     osd_data[2] = aux[HIDEOSD];
+#else
+		    osd_data[2] = aux[chan[hideosd_ch]];
+#endif		    
                     osd_data[3] = vol >> 8;
                     osd_data[4] = vol & 0xFF;
 #ifndef OSD_RSSI_WARNING
@@ -436,8 +457,9 @@ void osd_setting()
                         showcase = 2;
                         break;
                     case 1:
-                        currentMenu = motorMenuHead;
+                        /* currentMenu = motorMenuHead; */
                         showcase = 3;
+			switch_flag = 1;
                         break; 
                     case 2:
                         currentMenu = receiverMenuHead;
@@ -599,34 +621,46 @@ void osd_setting()
             break;
      #ifdef f042_1s_bayang
         case 3:            
+	  // config menu
+
+	  if(switch_flag){
+	    switch_flag = 0;
+	    current_index = 0;
+	    max_index = 6;
+	  }
+
             getVertMenuIndex();
         
             if((rx[Roll] > 0.6f) && right_flag == 1)
             {
-                if(currentMenu->index ==0)
+                if(current_index ==0)
                 {
                     tx_config = !tx_config;
                 }
-                else if(currentMenu->index ==1)
+                else if(current_index ==1)
                 {
                     mode_config++;
                     if(mode_config>1)
                         mode_config=0;
                 }
-                else if(currentMenu->index ==2)
+                else if(current_index ==2)
                 {
                     led_config = !led_config;
                 }
-		else if(currentMenu->index ==3)
+		else if(current_index ==3)
 		  {
 		    led_color++;
 		    if(led_color>8){
 		      led_color=0;
 		    }
 		  }
-                else if(currentMenu->index ==4){
+                else if(current_index ==4){
                     T8SG_config =!T8SG_config;
                 }
+		else if(current_index == 5){
+		  showcase = 10;
+		  switch_flag = 1;
+		}
                 else{
                     showcase = 1;
                     motorMenu = motorMenuHead;
@@ -635,7 +669,7 @@ void osd_setting()
                 right_flag = 0;
             }
             if ((rx[Roll] < -0.6f) && left_flag == 1) {
-	      if(currentMenu->index==3){
+	      if(current_index==3){
 		if(led_color==0){
 		  led_color=8;
 		} else{
@@ -648,7 +682,7 @@ void osd_setting()
             {
                 osd_data[0] =0x0f;
                 osd_data[0] |=showcase << 4;
-                osd_data[1] = currentMenu->index;
+                osd_data[1] = current_index;
                 osd_data[2] = tx_config;
                 osd_data[3] = mode_config;
                 osd_data[4] = led_config;
@@ -1428,6 +1462,187 @@ void osd_setting()
               osd_count = 0;
             }
       break;
+    case 10:
+      // channels menu
+#ifdef OSD_CHANNELS_SETTINGS
+	  // Disposition menu
+
+	  if (switch_flag){
+	    current_index = 0;
+	    max_index = 5;
+	    switch_flag = 0;
+	  }
+
+	  getVertMenuIndex();
+        
+            if((rx[Roll] > 0.6f) && right_flag == 1)
+            {
+                switch(current_index)
+                {
+                    case 0:
+		      if(arming_ch == 7){
+			arming_ch = 0;
+		      } else {
+			arming_ch++;}
+		      break;
+                    
+                    case 1:
+		      if(idle_up_ch == 7){
+			idle_up_ch = 0;
+		      } else {
+			idle_up_ch++;}
+                        break;
+                    
+                    case 2:
+		      if(levelmode_ch == 7){
+			levelmode_ch = 0;
+		      } else {
+			levelmode_ch++;}
+                        break;
+
+                    case 3:
+		      if(racemode_ch == 7){
+			racemode_ch = 0;
+		      } else {
+			racemode_ch++;}
+                        break;
+
+                    case 4:
+		      if(horizon_ch == 7){
+			horizon_ch = 0;
+		      } else {
+			horizon_ch++;}
+                        break;
+
+                    case 5:
+		      if(pidprofile_ch == 7){
+			pidprofile_ch = 0;
+		      } else {
+			pidprofile_ch++;}
+                        break;
+
+                    case 6:
+		      if(rates_ch == 7){
+			rates_ch = 0;
+		      } else {
+			rates_ch++;}
+                        break;
+
+                    case 7:
+		      if(leds_on_ch == 7){
+			leds_on_ch = 0;
+		      } else {
+			leds_on_ch++;}
+                        break;
+
+                    case 8:
+		      if(hideosd_ch == 7){
+			hideosd_ch = 0;
+		      } else {
+			hideosd_ch++;}
+                        break;
+
+                    case 9:
+                        showcase = 3;
+			switch_flag = 1;
+                        break;
+                }
+                right_flag = 0;
+            }
+            if((rx[Roll] < -0.6f) && left_flag == 1)
+            {
+                switch(current_index)
+                {
+                    case 0:
+		      if(arming_ch == 0){
+			arming_ch = 7;
+		      } else {
+			arming_ch--;}
+                        break;
+
+                    case 1:
+		      if(idle_up_ch == 0){
+			idle_up_ch = 7;
+		      } else {
+			idle_up_ch--;}
+                        break;
+
+                    case 2:
+		      if(levelmode_ch == 0){
+			levelmode_ch = 7;
+		      } else {
+			levelmode_ch--;}
+                        break;
+
+                    case 3:
+		      if(racemode_ch == 0){
+			racemode_ch = 7;
+		      } else {
+			racemode_ch--;}
+                        break;
+
+                    case 4:
+		      if(horizon_ch == 0){
+			horizon_ch = 7;
+		      } else {
+			horizon_ch--;}
+                        break;
+
+                    case 5:
+		      if(pidprofile_ch == 0){
+			pidprofile_ch = 7;
+		      } else {
+			pidprofile_ch--;}
+                        break;
+
+                    case 6:
+		      if(rates_ch == 0){
+			rates_ch = 7;
+		      } else {
+			rates_ch--;}
+                        break;
+
+                    case 7:
+		      if(leds_on_ch == 0){
+			leds_on_ch = 7;
+		      } else {
+			leds_on_ch--;}
+                        break;
+
+                    case 8:
+		      if(hideosd_ch == 0){
+			hideosd_ch = 7;
+		      } else {
+			hideosd_ch--;}
+                        break;
+                }
+                
+                left_flag = 0;
+            }
+            if(osd_count >= 200)
+            {
+                osd_data[0] =0x0f;
+                osd_data[0] |=showcase << 4;
+                osd_data[1] = currentMenu->index;
+                osd_data[2] = arming_ch;
+                osd_data[3] = idle_up_ch;
+                osd_data[4] = levelmode_ch;
+                osd_data[5] = racemode_ch;
+                osd_data[6] = horizon_ch;
+                osd_data[7] = pidprofile_ch;
+                osd_data[8] = rates_ch;
+                osd_data[9] = leds_on_ch;
+		osd_data[10] = hideosd_ch;
+                osd_data[11] = 0;
+                for (uint8_t i = 0; i < 11; i++)
+                    osd_data[11] += osd_data[i];  
+                
+                UART2_DMA_Send();
+                osd_count = 0;
+            }
+
+#endif      
+	    break;
         default:
             break;
     }

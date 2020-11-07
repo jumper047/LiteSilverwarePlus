@@ -127,7 +127,7 @@
 #define HORIZON   CHAN_9
 #define PIDPROFILE CHAN_OFF                //For switching stickAccelerator & stickTransition profiles on pid.c page
 #define RATES CHAN_ON
-#define LEDS_ON CHAN_8
+#define LEDS_ON CHAN_9
 #define HIDEOSD CHAN_7                     //for disabling the OSD (with appropriate OSD firmware flashed)
 
 #define Roll     0   
@@ -171,6 +171,8 @@
 // *************on stock firmware you can set up receiver's type blinking when
 // *************your rssi drops below threshold
 //#define OSD_RSSI_WARNING 20
+
+#define OSD_CHANNELS_SETTINGS
 
 //**********************************************************************************************************************
 //***********************************************VOLTAGE SETTINGS*******************************************************
