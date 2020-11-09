@@ -997,7 +997,7 @@ void osd_setting()
             }
             if((rx[Roll] < -0.6f) && left_flag == 1)
             {
-                switch(currentMenu->index)
+                switch(current_index)
                 {
 
                     case 1:
