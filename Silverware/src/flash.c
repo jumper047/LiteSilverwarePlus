@@ -137,6 +137,7 @@ void flash_save( void) {
        writeword(62+i, name[i]);
      }
 
+#ifdef OSD_CHANNELS_SETTINGS
     writeword(75, arming_ch);
     writeword(76, idle_up_ch);
     writeword(77, levelmode_ch);
@@ -146,7 +147,7 @@ void flash_save( void) {
     writeword(81, rates_ch);
     writeword(82, leds_on_ch);
     writeword(83, hideosd_ch);
-    
+#endif    
     
 #ifdef RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
 // autobind info     

@@ -658,7 +658,7 @@ void osd_setting()
                     T8SG_config =!T8SG_config;
                 }
 		else if(current_index == 5){
-		  showcase = 10;
+		  showcase = 8;
 		  switch_flag = 1;
 		}
                 else{
@@ -906,23 +906,25 @@ void osd_setting()
             {
                 switch(current_index)
                 {
-                    case 0:
-                      showcase = 8;
-		      switch_flag = 1;
-		      break;
 
+		case 0:
+		  showcase = 9;
+		  switch_flag = 1;
+		  break;
                     case 1:
-		      showcase = 9;
-		      switch_flag = 1;
-		      break;
-
-                    case 2:
 		      // display name
   		      display_name = !display_name;
 		      break;
                     
-                    case 3:
+                    case 2:
 		      display_crosshair = !display_crosshair;
+		      break;
+
+                    case 3:
+		      crosshair_l++;
+		      if (crosshair_l > 32){
+			crosshair_l = 0;
+		      }
 		      break;
 
                     case 4:
@@ -998,13 +1000,21 @@ void osd_setting()
                 switch(currentMenu->index)
                 {
 
-                    case 2:
+                    case 1:
 		      // display name
   		      display_name = !display_name;
 		      break;
                     
-                    case 3:
+                    case 2:
 		      display_crosshair = !display_crosshair;
+		      break;
+
+                    case 3:
+		      if (crosshair_l == 0){
+			crosshair_l = 32;
+		      } else {
+			crosshair_l--;
+		      }
 		      break;
 
                     case 4:
@@ -1071,7 +1081,7 @@ void osd_setting()
                 osd_data[3] = display_crosshair;
                 osd_data[4] = low_battery;;
                 osd_data[5] = low_rssi;
-                osd_data[6] = 0;
+                osd_data[6] = crosshair_l;
                 osd_data[7] = 0;
                 osd_data[8] = 0;
                 osd_data[9] = 0;
@@ -1155,321 +1165,12 @@ void osd_setting()
             break;
 
         case 8:
-	  // Disposition menu
-
-	  if (switch_flag){
-	    current_index = 0;
-	    max_index = 5;
-	    switch_flag = 0;
-	  }
-
-            getVertMenuIndex();
-        
-            if((rx[Roll] > 0.6f) && right_flag == 1)
-            {
-                switch(current_index)
-                {
-                    case 0:
-                        low_bat_l++;
-                        if(low_bat_l>32)
-                            low_bat_l=0;
-                        break;
-                    
-                    case 1:
-                        mode_l++;
-                        if(mode_l>32)
-                            mode_l=0;
-                        break;
-                    
-                    case 2:
-                        vol_l++;
-                        if(vol_l>32)
-                            vol_l=0;
-                        break;
-                    case 3:
-		      // name position
-                        name_l++;
-                        if(name_l>32)
-                            name_l=0;
-                        break;
-
-                    case 4:
-		      // crosshair position
-                        crosshair_l++;
-                        if(crosshair_l>32)
-                            crosshair_l=0;
-                        break;
-
-                    case 5:
-                        showcase = 6;
-			switch_flag = 1;
-                        break;
-                        
-                #ifdef f042_1s_bl
-                    case 3:
-                        turtle_l++;
-                        if(turtle_l>32)
-                            turtle_l=0;
-                        break;
-                    
-                    case 4:
-                        low_battery++;
-                        if(low_battery>40)
-                            low_battery=28;
-                        break;
-                        
-                    case 5:
-                        showcase = 1;
-                        displayMenu = displayMenuHead;
-                        currentMenu = setMenuHead;
-                        break;  
-                 #endif
-                    
-                 #ifdef f042_2s_bl
-                    case 3:
-                        curr_l++;
-                        if(curr_l>32)
-                            curr_l=0;
-                        break;
-                    
-                    case 4:
-                        turtle_l++;
-                        if(turtle_l>32)
-                            turtle_l=0;
-                        break;
-                    
-                    case 5:
-                        low_battery++;
-                        if(low_battery>80)
-                            low_battery=55;
-                        break;
-                        
-                    case 6:
-                        showcase = 1;
-                        displayMenu = displayMenuHead;
-                        currentMenu = setMenuHead;
-                        break; 
-                #endif
-                    
-                }
-                right_flag = 0;
-            }
-            if((rx[Roll] < -0.6f) && left_flag == 1)
-            {
-                switch(currentMenu->index)
-                {
-                    case 0:
-                        if(low_bat_l==0)
-                            low_bat_l=32;
-                        else
-                            low_bat_l--;
-                        break;
-                    
-                    case 1:
-                        if(mode_l==0)
-                            mode_l=32;
-                        else
-                            mode_l--;
-                        break;
-                    
-                    case 2:
-                        if(vol_l==0)
-                            vol_l=32;
-                        else
-                            vol_l--;
-                        break;
-                    case 3:
-		      // name position
-                        if(name_l==0)
-                            name_l=32;
-			else
-			  name_l--;
-                        break;
-
-                    case 4:
-		      // crosshair position
-                        crosshair_l++;
-                        if(crosshair_l>32)
-                            crosshair_l=0;
-                        break;
-
-                #ifdef f042_1s_bl
-                    case 3:
-                        if(turtle_l==0)
-                            turtle_l=32;
-                        else
-                            turtle_l--;
-                        break;
-                    
-                    case 4:
-                        low_battery--;
-                        if(low_battery<28)
-                            low_battery=40;
-                        break;
-                #endif
-                        
-                #ifdef f042_2s_bl
-                    case 3:
-                        if(curr_l==0)
-                            curr_l=32;
-                        else
-                            curr_l--;
-                        break;
-                    
-                    case 4:
-                        if(turtle_l==0)
-                            turtle_l=32;
-                        else
-                            turtle_l--;
-                        break;
-                    
-                    case 5:
-                        low_battery--;
-                        if(low_battery<55)
-                            low_battery=80;
-                        break;
-                #endif
-                }
-                
-                left_flag = 0;
-            }
-            if(osd_count >= 200)
-            {
-                osd_data[0] =0x0f;
-                osd_data[0] |=showcase << 4;
-                osd_data[1] = currentMenu->index;
-                osd_data[2] = low_bat_l;
-                osd_data[3] = mode_l;
-                osd_data[4] = vol_l;
-                osd_data[5] = 0;
-            #ifdef f042_2s_bl
-                osd_data[5] = curr_l;
-            #endif
-                osd_data[6] = turtle_l;
-                osd_data[7] = name_l;
-                osd_data[8] = crosshair_l;
-                osd_data[9] = 0;
-		osd_data[10] = 0;
-                osd_data[11] = 0;
-                for (uint8_t i = 0; i < 11; i++)
-                    osd_data[11] += osd_data[i];  
-                
-                UART2_DMA_Send();
-                osd_count = 0;
-            }
-            break;
-
-    case 9:
-	  // Name menu
-      if(switch_flag){
-	current_index = 0;
-	max_index = 9;
-	switch_flag = 0;
-      }
-      
-            getHorizMenuIndex();
-            if((rx[Pitch] < -0.6f) && down_flag == 1)
-            {
-              switch (current_index) {
-	      case 0:
-	      case 1:
-	      case 2:
-	      case 3:
-	      case 4:
-	      case 5:
-	      case 6:
-	      case 7:
-	      case 8:
-		//	      case 9:
-		//	      case 10:
-		//	      case 11:
-		if (name[current_index]==27){
-		  name[current_index]=0;
-		} else{
-		  name[current_index] = name[current_index] + 1;
-		}
-		break;
-	      case 9:
-		//back
-		showcase = 6;
-		switch_flag = 1;
-		break;
-	      }
-	    down_flag = 0;
-            }
-
-            if ((rx[Pitch] > 0.6f) && up_flag == 1) {
-              switch (current_index) {
-	      case 0:
-	      case 1:
-	      case 2:
-	      case 3:
-	      case 4:
-	      case 5:
-	      case 6:
-	      case 7:
-	      case 8:
-	      /* case 9: */
-	      /* case 10: */
-	      /* case 11: */
-		if (name[current_index]==0){
-		  name[current_index]=27;
-		} else{
-		  name[current_index] = name[current_index] - 1;
-		}
-		break;
-	      case 9:
-		//back
-		showcase = 6;
-		switch_flag = 1;
-		break;
-	      }
-              up_flag = 0;
-            }
-
-            // send name to osd
-            if (osd_count >= 200) {
-              osd_data[0] = 0x0f;
-              osd_data[0] |= showcase << 4;
-	      osd_data[1] = current_index;
-
-	      /* uint8_t i=0; */
-	      /* uint8_t k=2; */
-	      /* uint8_t order=0; */
-	      /* osd_data[2] = 0; */
-
-	      /* while(i < 13){ */
-	      /* 	for(uint8_t count = 0; count < 6; count++){ */
-	      /* 	  osd_data[k] = osd_data[k] + (((name[i] >> count) & 0x01) << order); */
-	      /* 	  order++; */
-              /*     if (order > 7) { */
-              /*       order = 0; */
-              /*       k++; */
-	      /* 	    osd_data[k] = 0; */
-              /*     } */
-              /*   } */
-              /*   i++; */
-              /* } */
-	      for(uint8_t i=0;i<9;i++){
-		osd_data[i+2] = name[i];
-	      }
-
-              osd_data[11] = 0;
-              for (uint8_t i = 0; i < 11; i++)
-                osd_data[11] += osd_data[i];
-
-              UART2_DMA_Send();
-              osd_count = 0;
-            }
-      break;
-    case 10:
       // channels menu
 #ifdef OSD_CHANNELS_SETTINGS
-	  // Disposition menu
 
 	  if (switch_flag){
 	    current_index = 0;
-	    max_index = 5;
+	    max_index = 9;
 	    switch_flag = 0;
 	  }
 
@@ -1623,7 +1324,7 @@ void osd_setting()
             {
                 osd_data[0] =0x0f;
                 osd_data[0] |=showcase << 4;
-                osd_data[1] = currentMenu->index;
+                osd_data[1] = current_index;
                 osd_data[2] = arming_ch;
                 osd_data[3] = idle_up_ch;
                 osd_data[4] = levelmode_ch;
@@ -1642,7 +1343,83 @@ void osd_setting()
             }
 
 #endif      
-	    break;
+            break;
+
+    case 9:
+      	  // Name menu
+      if(switch_flag){
+	 current_index = 0;
+	 max_index = 9;
+	 switch_flag = 0;
+      }
+       
+      getHorizMenuIndex();
+      if ((rx[Pitch] < -0.6f) && down_flag == 1) {
+	              switch (current_index) {
+ 	      case 0:
+ 	      case 1:
+ 	      case 2:
+ 	      case 3:
+ 	      case 4:
+ 	      case 5:
+ 	      case 6:
+ 	      case 7:
+ 	      case 8:
+ 		if (name[current_index]==27){
+ 		  name[current_index]=0;
+ 		} else{
+ 		  name[current_index] = name[current_index] + 1;
+ 		}
+ 		break;
+ 	      case 9:
+ 		//back
+ 		showcase = 6;
+ 		switch_flag = 1;
+ 		break;
+ 	      }
+ 	    down_flag = 0;
+             }
+
+             if ((rx[Pitch] > 0.6f) && up_flag == 1) {
+               switch (current_index) {
+ 	      case 0:
+ 	      case 1:
+ 	      case 2:
+ 	      case 3:
+ 	      case 4:
+ 	      case 5:
+ 	      case 6:
+ 	      case 7:
+ 	      case 8:
+ 		if (name[current_index]==0){
+ 		  name[current_index]=27;
+ 		} else{
+ 		  name[current_index] = name[current_index] - 1;
+ 		}
+ 		break;
+ 	      case 9:
+ 		//back
+ 		showcase = 6;
+ 		switch_flag = 1;
+ 		break;
+ 	      }
+               up_flag = 0;
+      }
+            // send name to osd
+            if (osd_count >= 200) {
+              osd_data[0] = 0x0f;
+              osd_data[0] |= showcase << 4;
+	      osd_data[1] = current_index;
+	      for(uint8_t i=0;i<9;i++){
+		osd_data[i+2] = name[i];
+	      }
+              osd_data[11] = 0;
+              for (uint8_t i = 0; i < 11; i++)
+                osd_data[11] += osd_data[i];
+              UART2_DMA_Send();
+              osd_count = 0;
+            }
+      break;
         default:
             break;
     }
