@@ -83,6 +83,8 @@ unsigned long blinktime=0;
 unsigned char show_rx_name=0;
 #endif
 
+extern int failsafe;
+
 #ifdef OSD_CHANNELS_SETTINGS
 unsigned char chan[8] = {CHAN_OFF, CHAN_ON, CHAN_5, CHAN_6, CHAN_7, CHAN_8, CHAN_9, CHAN_10};
 unsigned char arming_ch = 3;
@@ -370,7 +372,7 @@ void osd_setting()
 #ifdef OSD_RSSI_INDICATION
 		    osd_data[8] = rx_rssi;
 #endif		    
-                    osd_data[9] = 0;
+                    osd_data[9] = failsafe;
                 #ifdef CURR_ADC
                     osd_data[8] = cur >> 8;
                     osd_data[9] = cur & 0xFF;
