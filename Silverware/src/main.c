@@ -98,6 +98,16 @@ unsigned char flip_finish = 0;
 extern int sbus_dsmx_flag;
 extern unsigned char motorDir[4];
 
+// channels settings via osd
+#ifdef OSD_CHANNELS_SETTINGS
+extern unsigned char chan[8];
+extern unsigned char arming_ch;
+extern unsigned char levelmode_ch;
+extern unsigned char racemode_ch;
+extern unsigned char leds_on_ch;
+#endif
+
+
 // looptime in seconds
 float looptime;
 // filtered battery in volts
@@ -667,7 +677,11 @@ if ( LED_NUMBER > 0)
                 }
             else 
             {  
+#ifndef OSD_CHANNELS_SETTINGS
                 int leds_on = !aux[LEDS_ON];
+#else
+                int leds_on = !aux[chan[leds_on_ch]];
+#endif
                 if (ledcommand)
                 {
                     if (!ledcommandtime)
@@ -783,7 +797,11 @@ rgb_dma_start();
 #endif
 
 #ifndef f042_1s_bayang
+#ifndef OSD_CHANNELS_SETTINGS
     if(aux[ARMING] && showcase == 0)
+#else
+    if(aux[chan[arming_ch]] && showcase == 0)
+#endif
     {
         if(osd_count == 400)
         {
@@ -823,8 +841,13 @@ rgb_dma_start();
     #ifdef f042_1s_bayang
         if(tx_config && showcase ==0)
         {
+#ifndef OSD_CHANNELS_SETTINGS
             if(aux7 !=aux[RACEMODE]){
                 aux7 = aux[RACEMODE];                
+#else
+            if(aux7 !=aux[chan[racemode_ch]]){
+                aux7 = aux[chan[racemode_ch]];
+#endif
                 channel++; 
                 if(channel>15) channel=8;                   
                 osd_data[0] = 0xAA;
@@ -838,7 +861,11 @@ rgb_dma_start();
             }
         }
         else{
+#ifndef OSD_CHANNELS_SETTINGS
             aux7 = aux[RACEMODE];
+#else
+            aux7 = aux[chan[racemode_ch]];
+#endif
         }
     #endif
         
@@ -858,7 +885,11 @@ rgb_dma_start();
                      motorDir[3]=0;
                  }                
              }
+#ifndef OSD_CHANNELS_SETTINGS
             if (aux[LEVELMODE])
+#else
+            if (aux[chan[levelmode_ch]])
+#endif
             {
                 for(int i=20;i>0;i--)
                 {
@@ -871,7 +902,11 @@ rgb_dma_start();
             }
             else
             {
+#ifndef OSD_CHANNELS_SETTINGS
                 if (!aux[RACEMODE])
+#else
+                if (!aux[chan[racemode_ch]])
+#endif
                 {
                     for(int i=20;i>0;i--)
                     {
@@ -881,7 +916,11 @@ rgb_dma_start();
                       motor_dir(3,(motorDir[3] ? DSHOT_CMD_ROTATE_REVERSE : DSHOT_CMD_ROTATE_NORMAL));
                     }
                 }
+#ifndef OSD_CHANNELS_SETTINGS
                 else if(aux[RACEMODE])
+#else
+                else if(aux[chan[racemode_ch]])
+#endif
                 {
                     for(int i=20;i>0;i--)
                     {

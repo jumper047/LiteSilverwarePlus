@@ -279,10 +279,11 @@ void osd_setting()
                 {
                     osd_data[0] = 0x0f;
                     osd_data[0] |=showcase << 4;
-                    osd_data[1] = aux[ARMING];
 #ifndef OSD_CHANNELS_SETTINGS		    
+                    osd_data[1] = aux[ARMING];
                     osd_data[2] = aux[HIDEOSD];
 #else
+		    osd_data[1] = aux[chan[arming_ch]];
 		    osd_data[2] = aux[chan[hideosd_ch]];
 #endif		    
                     osd_data[3] = vol >> 8;
@@ -290,7 +291,11 @@ void osd_setting()
                     osd_data[5] = rx_switch;
                      
                     osd_data[6] = 0;
+#ifndef OSD_CHANNELS_SETTINGS
                     osd_data[6] = (aux[LEVELMODE] << 0);
+#else
+                    osd_data[6] = (aux[chan[levelmode_ch]] << 0);		    
+#endif
        
                     osd_data[7] = 0;
                     osd_data[8] = 0;
@@ -309,7 +314,11 @@ void osd_setting()
                 }   
             }
             else{
+#ifndef OSD_CHANNELS_SETTINGS
                 if(!aux[ARMING] && AETR)
+#else
+                if(!aux[chan[arming_ch]] && AETR)
+#endif		  
                 {
                     showcase = 1;
                     unsigned char i = 0;
@@ -345,10 +354,11 @@ void osd_setting()
                 {
                     osd_data[0] = 0x0f;
                     osd_data[0] |=showcase << 4;
-                    osd_data[1] = aux[ARMING];
 #ifndef OSD_CHANNELS_SETTINGS		    
+                    osd_data[1] = aux[ARMING];
                     osd_data[2] = aux[HIDEOSD];
 #else
+                    osd_data[1] = aux[chan[arming_ch]];
 		    osd_data[2] = aux[chan[hideosd_ch]];
 #endif		    
                     osd_data[3] = vol >> 8;
@@ -365,7 +375,11 @@ void osd_setting()
 		    }
 #endif		    
                     osd_data[6] = 0;
+#ifndef OSD_CHANNELS_SETTINGS
                     osd_data[6] = (aux[LEVELMODE] << 0) | (aux[RACEMODE] << 1) | (aux[HORIZON] << 2);
+#else
+                    osd_data[6] = (aux[chan[levelmode_ch]] << 0) | (aux[chan[racemode_ch]] << 1) | (aux[chan[horizon_ch]] << 2);
+#endif
        
                     osd_data[7] = 0;
                     osd_data[8] = 0;
@@ -435,7 +449,11 @@ void osd_setting()
                 osd_data[6] = 0;
                 osd_data[6] = (aux[CHAN_6] << 0) | (aux[CHAN_7] << 1) | (aux[CHAN_8] << 2);
    
+#ifndef OSD_CHANNELS_SETTINGS
                 osd_data[7] = (!aux[LEVELMODE] && aux[RACEMODE]);
+#else
+                osd_data[7] = (!aux[chan[levelmode_ch]] && aux[chan[racemode_ch]]);
+#endif
                 osd_data[8] = 0;
                 osd_data[9] = 0;
                 osd_data[10] = 0;
@@ -749,7 +767,11 @@ void osd_setting()
             
             if((rx[Roll] > 0.6f) && right_flag == 1)
             {
+#ifndef OSD_CHANNELS_SETTINGS
                 if(aux[LEVELMODE])
+#else
+                if(aux[chan[levelmode_ch]])
+#endif
                 {
                     showcase = 1;
                     currentMenu = setMenuHead;

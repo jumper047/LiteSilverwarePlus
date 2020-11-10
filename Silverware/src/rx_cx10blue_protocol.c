@@ -48,6 +48,12 @@ extern char aux[AUXNUMBER];
 extern char lastaux[AUXNUMBER];
 extern char auxchange[AUXNUMBER];
 
+#ifdef OSD_CHANNELS_SETTINGS
+extern unsigned char chan[8];
+extern unsigned char levelmode_ch;
+extern unsigned char racemode_ch;
+#endif
+
 int rxmode = 0;
 int failsafe = 0;
 
@@ -135,8 +141,14 @@ static int decodepacket( void)
 		rx[2] = cx10scale(15) ; // throttle
 				
 #ifndef DISABLE_EXPO
+
+#ifndef OSD_CHANNELS_SETTINGS
 							if (aux[LEVELMODE]){
 								if (aux[RACEMODE]){
+#else
+							if (aux[chan[levelmode_ch]]){
+								if (aux[chan[racemode[ch]]]){
+#endif
 									rx[0] = rcexpo(rx[0], ANGLE_EXPO_ROLL);
 									rx[1] = rcexpo(rx[1], ACRO_EXPO_PITCH);
 									rx[2] = rcexpo(rx[2], ANGLE_EXPO_YAW);

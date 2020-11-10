@@ -67,6 +67,13 @@
 extern float rx[];
 extern char aux[16];
 
+#ifdef OSD_CHANNELS_SETTINGS
+extern unsigned char chan[8];
+extern unsigned char arming_ch;
+extern unsigned char levelmode_ch;
+extern unsigned char racemode_ch;
+#endif
+
 // IDLE_OFFSET is added to the throttle. Adjust its value so that the motors
 // still spin at minimum throttle.
 #ifndef IDLE_OFFSET
@@ -507,7 +514,11 @@ void pwm_set( uint8_t number, float pwm )
 		value = 0; // stop the motors
 	}
 
+#ifndef OSD_CHANNELS_SETTINGS
     if(!showcase && !aux[ARMING] && !aux[LEVELMODE] && aux[RACEMODE])
+#else
+    if(!showcase && !aux[chan[arming_ch]] && !aux[chan[levelmode_ch]] && aux[chan[racemode_ch]])
+#endif      
     {
         if((rx[Roll] > 0.3f))
         {

@@ -10,6 +10,11 @@ extern int ledcommand;
 extern char aux[];
 extern char led_color;
 
+#ifdef OSD_CHANNELS_SETTINGS
+extern unsigned char chan[8];
+extern unsigned char leds_on_ch;
+#endif
+
 // Colors
 #define RGB_VALUE_WHITE RGB( 255, 255, 255)
 #define RGB_VALUE_PINK RGB( 255, 20, 147)
@@ -317,7 +322,11 @@ else
 			else 
 			{
 
+#ifndef OSD_CHANNELS_SETTINGS
 				if ( aux[LEDS_ON] )
+#else
+				if ( aux[chan[leds_on_ch]] )
+#endif
 				  {if(led_color == 0){
 				    rgb_led_set_all( RGB_VALUE_WHITE );
                                   } else if (led_color == 1) {

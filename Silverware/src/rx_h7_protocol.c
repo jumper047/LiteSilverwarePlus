@@ -44,6 +44,12 @@ extern char aux[AUXNUMBER];
 extern char lastaux[AUXNUMBER];
 extern char auxchange[AUXNUMBER];
 
+#ifdef OSD_CHANNELS_SETTINGS
+extern unsigned char chan[8];
+extern unsigned char levelmode_ch;
+extern unsigned char racemode_ch;
+#endif
+
 
 #define H7_FLIP_MASK  0x80 // right shoulder (3D flip switch), resets after aileron or elevator has moved and came back to neutral
 #define H7_F_S_MASK  0x01
@@ -158,8 +164,13 @@ int decode_h7(void) {
 
 		
 #ifndef DISABLE_EXPO
+#ifndef OSD_CHANNELS_SETTINGS
 							if (aux[LEVELMODE]){
 								if (aux[RACEMODE]){
+#else
+							if (aux[chan[levelmode_ch]]){
+								if (aux[chan[racemode_ch]]){
+#endif
 									rx[0] = rcexpo(rx[0], ANGLE_EXPO_ROLL);
 									rx[1] = rcexpo(rx[1], ACRO_EXPO_PITCH);
 									rx[2] = rcexpo(rx[2], ANGLE_EXPO_YAW);

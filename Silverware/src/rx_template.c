@@ -69,6 +69,12 @@ extern float aux_analog[AUXNUMBER];
 extern float lastaux_analog[AUXNUMBER];
 extern char aux_analogchange[AUXNUMBER];
 
+#ifdef OSD_CHANNELS_SETTINGS
+extern unsigned char chan[8];
+extern unsigned char levelmode_ch;
+extern unsigned char racemode_ch;
+#endif
+
 int failsafe = 0;
 
 void writeregs ( uint8_t data[] , uint8_t size )
@@ -233,8 +239,13 @@ static int decodepacket( void)
 			rx[3] = ( (rxdata[8]&0x0003) * 256 + rxdata[9] ) * 0.000976562;
 		
 #ifndef DISABLE_EXPO
+#ifndef OSD_CHANNELS_SETTINGS
 							if (aux[LEVELMODE]){
 								if (aux[RACEMODE]){
+#else
+							if (aux[chan[levelmode_ch]]){
+								if (aux[chan[racemode_ch]]){
+#endif
 									rx[0] = rcexpo(rx[0], ANGLE_EXPO_ROLL);
 									rx[1] = rcexpo(rx[1], ACRO_EXPO_PITCH);
 									rx[2] = rcexpo(rx[2], ANGLE_EXPO_YAW);
