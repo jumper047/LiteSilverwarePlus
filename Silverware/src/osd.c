@@ -57,7 +57,8 @@ unsigned char display_crosshair=0;
 unsigned char low_rssi=0;
 char motorDir[4] = {0,0,0,0};
 
-unsigned char name[9] = {0};
+// default name - silver
+unsigned char name[9] = {19,9,12,22,5,18,0,0,0};
 
 #if defined(f042_1s_bl) || defined(f042_1s_bayang) 
 unsigned char low_battery=33;
