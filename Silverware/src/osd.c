@@ -496,6 +496,10 @@ void osd_setting()
                         showcase = 7;
                         break;
                     case 6:
+                        showcase = 8;
+			switch_flag = 1;
+                        break;
+                    case 7:
                         showcase =0;
                         currentMenu = setMenuHead;
                         down_flag = 0;
@@ -514,7 +518,7 @@ void osd_setting()
                         extern unsigned long lastlooptime;
                         lastlooptime = gettime();
                         break;
-                    case 7:
+                    case 8:
                         showcase =0;
                         currentMenu = setMenuHead;
                         down_flag = 0;
@@ -643,7 +647,7 @@ void osd_setting()
 	  if(switch_flag){
 	    switch_flag = 0;
 	    current_index = 0;
-	    max_index = 6;
+	    max_index = 5;
 	  }
 
             getVertMenuIndex();
@@ -673,10 +677,6 @@ void osd_setting()
 		  }
                 else if(current_index ==4){
                     T8SG_config =!T8SG_config;
-                }
-		else if(current_index == 5){
-		  showcase = 8;
-		  switch_flag = 1;
 		}
                 else{
                     showcase = 1;
@@ -1265,9 +1265,9 @@ void osd_setting()
                         break;
 
                     case 9:
-                        showcase = 3;
-			switch_flag = 1;
-                        break;
+		      showcase = 1;
+		      currentMenu = setMenuHead;
+		      break;
                 }
                 right_flag = 0;
             }
@@ -1482,7 +1482,7 @@ menu_list createMenu(char len,char item)
 
 void osdMenuInit(void)
 {
-    setMenu = createMenu(7,0);
+    setMenu = createMenu(8,0);
     setMenuHead = setMenu;
     
     pidMenu = createMenu(9,1);
