@@ -88,14 +88,14 @@ extern int failsafe;
 
 #ifdef OSD_CHANNELS_SETTINGS
 unsigned char chan[8] = {CHAN_OFF, CHAN_ON, CHAN_5, CHAN_6, CHAN_7, CHAN_8, CHAN_9, CHAN_10};
-unsigned char arming_ch = 3;
-unsigned char idle_up_ch = 3;
-unsigned char levelmode_ch = 4;
-unsigned char racemode_ch = 8;
-unsigned char horizon_ch = 7;
+unsigned char arming_ch = 2;
+unsigned char idle_up_ch = 2;
+unsigned char levelmode_ch = 3;
+unsigned char racemode_ch = 4;
+unsigned char horizon_ch = 5;
 unsigned char pidprofile_ch = 0;
 unsigned char rates_ch = 1;
-unsigned char leds_on_ch = 8;
+unsigned char leds_on_ch = 0;
 unsigned char hideosd_ch = 0;
 #endif
 
