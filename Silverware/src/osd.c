@@ -37,7 +37,7 @@ unsigned char channeltmp = 0;
 
 unsigned char mode = 0;
 unsigned char sa_flag = 0;
-unsigned char showcase = 0;
+unsigned char showcase = 9;
 int showcase_cnt = 0;
 unsigned char showcase_init=0;
 unsigned char low_bat_l=16;
@@ -234,10 +234,6 @@ void osd_setting()
     else if(showcase_cnt < 2610){
       showcase_cnt++;
       showcase=6;
-    }
-    else if(showcase_cnt < 3610){
-      showcase_cnt++;
-      showcase=8;
     }
     else if(!showcase_init){
         showcase_init = 1;
