@@ -59,6 +59,14 @@ extern float attitude[];
 extern unsigned int ratesValue;
 extern unsigned int ratesValueYaw;
 
+#ifdef OSD_CHANNELS_SETTINGS
+extern unsigned char chan[8];
+extern unsigned char arming_ch;
+extern unsigned char idle_up_ch;
+extern unsigned char levelmode_ch;
+extern unsigned char rates_ch;
+#endif
+
 int onground = 1;
 int onground_long = 1;
 
@@ -152,7 +160,11 @@ float rate_multiplier = 1.0;
 #if (defined USE_ANALOG_AUX && defined ANALOG_RATE_MULT)
 	rate_multiplier = aux_analog[ANALOG_RATE_MULT];
 #else
+#ifndef OSD_CHANNELS_SETTINGS
 	if ( aux[RATES]  )
+#else
+	if ( aux[chan[rates_ch]]  )
+#endif	  
 	{		
 		
 	}
@@ -248,7 +260,11 @@ pid_precalc();
 #endif
  
 if(tx_config){
+#ifndef OSD_CHANNELS_SETTINGS
     if (aux[LEVELMODE]&&!acro_override){
+#else
+    if (aux[chan[levelmode_ch]]&&!acro_override){      
+#endif
         extern void stick_vector( float rx_input[] , float maxangle);
         extern float errorvect[]; // level mode angle error calculated by stick_vector.c	
         extern float GEstG[3]; // gravity vector for yaw feedforward
@@ -284,7 +300,12 @@ if(tx_config){
 }
 else
 { 
+#ifndef OSD_CHANNELS_SETTINGS
     if (aux[LEVELMODE]&&!acro_override){
+#else
+    if (aux[chan[levelmode_ch]]&&!acro_override){
+#endif
+      
         extern void stick_vector( float rx_input[] , float maxangle);
         extern float errorvect[]; // level mode angle error calculated by stick_vector.c	
         extern float GEstG[3]; // gravity vector for yaw feedforward
@@ -451,7 +472,11 @@ extern unsigned char tx_config;
 #ifndef ARMING
  armed_state = 1;																							 									 // if arming feature is disabled - quad is always armed
 #else																												  											// CONDITION: arming feature is enabled
+#ifndef OSD_CHANNELS_SETTINGS
 	if (!aux[ARMING]){																					 										  // 						CONDITION: switch is DISARMED
+#else
+	  if (!aux[chan[arming_ch]]){
+#endif	  
 		armed_state = 0;																															  // 												disarm the quad by setting armed state variable to zero
 		if (rx_ready ==1)	binding_while_armed = 0;																			//                        rx is bound and has been disarmed so clear binding while armed flag
 	}else{ 																				   						  										// 						CONDITION: switch is ARMED
@@ -481,7 +506,12 @@ extern unsigned char tx_config;
 #ifndef IDLE_UP
  idle_state = 0;
 #else
+
+#ifndef OSD_CHANNELS_SETTINGS
 	if (!aux[IDLE_UP]){
+#else
+	  if (!aux[chan[idle_up_ch]]){
+#endif	    
 		idle_state = 0;
 	}else{ idle_state = 1;}
 #endif
@@ -520,7 +550,11 @@ if (aux[CH_AUX1]){
 
 
 // turn motors off if throttle is off and pitch / roll sticks are centered
-	if ( showcase || failsafe || (throttle < 0.001f && (!ENABLESTIX || !onground_long || aux[LEVELMODE] || (fabsf(rx[ROLL]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[PITCH]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[YAW]) < (float) ENABLESTIX_TRESHOLD ) ) ) ) 
+#ifndef OSD_CHANNELS_SETTINGS
+	if ( showcase || failsafe || (throttle < 0.001f && (!ENABLESTIX || !onground_long || aux[LEVELMODE] || (fabsf(rx[ROLL]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[PITCH]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[YAW]) < (float) ENABLESTIX_TRESHOLD ) ) ) )
+#else
+	if ( showcase || failsafe || (throttle < 0.001f && (!ENABLESTIX || !onground_long || aux[chan[levelmode_ch]] || (fabsf(rx[ROLL]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[PITCH]) < (float) ENABLESTIX_TRESHOLD && fabsf(rx[YAW]) < (float) ENABLESTIX_TRESHOLD ) ) ) )
+#endif	  
 	{	// motors off
 
 		if ( onground_long )
@@ -604,7 +638,11 @@ extern float throttlehpf( float in );
 	
 		  // throttle angle compensation
 #ifdef AUTO_THROTTLE
+#ifndef OSD_CHANNELS_SETTINGS
 		  if (aux[LEVELMODE])
+#else
+		  if (aux[chan[levelmode_ch]])
+#endif		    
 		    {
 			    //float autothrottle = fastcos(attitude[0] * DEGTORAD) * fastcos(attitude[1] * DEGTORAD);
 			    extern float GEstG[];

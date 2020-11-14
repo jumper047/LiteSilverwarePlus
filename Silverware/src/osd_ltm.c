@@ -17,6 +17,11 @@
 
 char crc;
 
+#ifdef OSD_CHANNELS_SETTINGS
+extern unsigned char chan[8];
+extern unsigned char levelmode_ch;
+#endif
+
 //extern int fputc(int ch, FILE * f);
 
 extern void buffer_add(int val );
@@ -138,7 +143,12 @@ if (rssi > 255) rssi = 255;
  sendbyte(0); // airspeed
 #define ARMED ( (rxmode!=RXMODE_BIND) )
 #define FAILSAFE failsafe
+
+#ifndef OSD_CHANNELS_SETTINGS
 #define MODE ( (aux[LEVELMODE])?3:4 )
+#else
+#define MODE ( (aux[chan[levelmode_ch]])?3:4 )
+#endif
 
 //0 : Manual
 //1 : Rate

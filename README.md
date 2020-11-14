@@ -1,8 +1,14 @@
-﻿This fork contains some improvements over stock BetaFPV's LiteSilverware.
-1. Support for external ibus receivers.
-2. Rainbow effect for rgb leds.
-3. Username on OSD (see name.h)
-4. RSSI on OSD (ibus, sbus and bayang supported).
+﻿## LiteSilverware+ notes
+This fork contains some improvements over stock BetaFPV's LiteSilverware.
+Main goal is to make silverware usable without compiler. For now only Beta65S Lite (Brushed FC v2.0) is supported.
+Support for brushless FC will be added later.
+
+Changes against original LiteSilverware:
+1. Support for external ibus receivers (backported from NFESilverware)
+2. Username on osd.
+3. Channels can be changed via OSD menu.
+4. Rainbow effect for rgb leds, also led's color can be changed from OSD.
+5. RSSI on OSD (ibus, sbus and bayang supported).
 5. Some minor OSD improvements (rearranged menus, optional crosshair, etc)
 
 OSD code in it's own repository - [LiteOSD](https://github.com/jumper047/LiteOSD)

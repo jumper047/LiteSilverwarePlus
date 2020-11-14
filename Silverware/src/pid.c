@@ -211,6 +211,13 @@ extern float vbattfilt;
 
 extern unsigned char profileAB;
 
+#ifdef OSD_CHANNELS_SETTINGS
+extern unsigned char chan[8];
+extern unsigned char levelmode_ch;
+extern unsigned char racemode_ch;
+extern unsigned char pidprofile_ch;
+#endif
+
 // multiplier for pids at 3V - for PID_VOLTAGE_COMPENSATION - default 1.33f from H101 code
 #define PID_VC_FACTOR 1.33f
 
@@ -327,7 +334,11 @@ void apply_analog_aux_to_pids()
 // output: pidoutput[x] = change required from motors
 float pid(int x )
 { 
+#ifndef OSD_CHANNELS_SETTINGS
     if ((aux[LEVELMODE]) && (!aux[RACEMODE])){
+#else
+    if ((aux[chan[levelmode_ch]]) && (!aux[chan[racemode_ch]])){
+#endif
 				if ((onground) || (in_air == 0)){
 						ierror[x] *= 0.98f;}
 		}else{
@@ -428,7 +439,11 @@ float pid(int x )
 				float transitionSetpointWeight[3];
 				float stickAccelerator[3];
 				float stickTransition[3];
+#ifndef OSD_CHANNELS_SETTINGS
 			if (aux[PIDPROFILE]){
+#else
+			if (aux[chan[pidprofile_ch]]){
+#endif
 				stickAccelerator[x] = stickAcceleratorProfileB[x];
 				stickTransition[x] = stickTransitionProfileB[x];
 			}else{
@@ -514,7 +529,11 @@ void pid_precalc()
 	if( v_compensation > PID_VC_FACTOR) v_compensation = PID_VC_FACTOR;
 	if( v_compensation < 1.00f) v_compensation = 1.00;
 	#ifdef LEVELMODE_PID_ATTENUATION
+#ifndef OSD_CHANNELS_SETTINGS
 	if (aux[LEVELMODE]) v_compensation *= LEVELMODE_PID_ATTENUATION;
+#else
+	if (aux[chan[levelmode_ch]]) v_compensation *= LEVELMODE_PID_ATTENUATION;
+#endif
 	#endif
 #endif
 }

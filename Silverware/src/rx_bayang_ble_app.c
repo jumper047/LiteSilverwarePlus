@@ -172,6 +172,14 @@ extern float aux_analog[AUXNUMBER];
 extern float lastaux_analog[AUXNUMBER];
 extern char aux_analogchange[AUXNUMBER];
 
+#ifdef OSD_CHANNELS_SETTINGS
+extern unsigned char chan[8];
+extern unsigned char levelmode_ch;
+extern unsigned char racemode_ch;
+extern unsigned char horizon_ch;
+extern unsigned char rates_ch;
+#endif
+
 char lasttrim[4];
 
 char rfchannel[4];
@@ -732,7 +740,11 @@ else
 unsigned int total_time_in_air_time = total_time_in_air>>20;
 total_time_in_air_time = total_time_in_air_time *10;
 
+#ifndef OSD_CHANNELS_SETTINGS
 int rate_and_mode_value = (aux[RATES]<<1) + !!(aux[LEVELMODE]);
+#else
+int rate_and_mode_value = (aux[chan[rates_ch]]<<1) + !!(aux[chan[levelmode_ch]]);
+#endif
 
 extern int bound_for_BLE_packet;
 extern int failsafe;
@@ -1073,12 +1085,21 @@ char trims[4];
                 }
 #endif
 
+#ifndef OSD_CHANNELS_SETTINGS
 							if (aux[LEVELMODE]){
 								if (aux[RACEMODE] && !aux[HORIZON]){
+#else
+							if (aux[chan[levelmode_ch]]){
+								if (aux[racemode_ch] && !aux[horizon_ch]){
+#endif
 									if ( ANGLE_EXPO_ROLL > 0.01) rx[0] = rcexpo(rx[0], ANGLE_EXPO_ROLL);
 									if ( ACRO_EXPO_PITCH > 0.01) rx[1] = rcexpo(rx[1], ACRO_EXPO_PITCH);
 									if ( ANGLE_EXPO_YAW > 0.01) rx[2] = rcexpo(rx[2], ANGLE_EXPO_YAW);
+#ifndef OSD_CHANNELS_SETTINGS
 								}else if (aux[HORIZON]){
+#else
+								}else if (aux[chan[horizon_ch]]){
+#endif
 									if ( ANGLE_EXPO_ROLL > 0.01) rx[0] = rcexpo(rx[0], ACRO_EXPO_ROLL);
 									if ( ACRO_EXPO_PITCH > 0.01) rx[1] = rcexpo(rx[1], ACRO_EXPO_PITCH);
 									if ( ANGLE_EXPO_YAW > 0.01) rx[2] = rcexpo(rx[2], ANGLE_EXPO_YAW);
