@@ -54,6 +54,7 @@ unsigned char led_color=0;
 unsigned char T8SG_config=0;
 unsigned char display_name=0;
 unsigned char display_crosshair=0;
+unsigned char display_rssi=0;
 unsigned char low_rssi=0;
 char motorDir[4] = {0,0,0,0};
 
@@ -967,13 +968,17 @@ void osd_setting()
                         break;
 
                     case 5:
+		      display_rssi = !display_rssi;
+		      break;
+
+                    case 6:
                         low_rssi = low_rssi + 5;
                         if(low_rssi>95){
 			  low_rssi=0;
 			}
 		      break;
 
-                    case 6:
+                    case 7:
                         showcase = 1;
                         currentMenu = setMenuHead;
                         break;
@@ -1037,12 +1042,15 @@ void osd_setting()
                         break;
 
                     case 5:
+		      display_rssi = !display_rssi;
+                      break;
+
+                    case 6:
                         low_rssi = low_rssi - 5;
                         if (low_rssi < 5) {
                           low_rssi = 95;
                         }
                       break;
-
                         
                 #ifdef f042_2s_bl
                     case 3:
@@ -1079,7 +1087,7 @@ void osd_setting()
                 osd_data[4] = low_battery;;
                 osd_data[5] = low_rssi;
                 osd_data[6] = crosshair_l;
-                osd_data[7] = 0;
+                osd_data[7] = display_rssi;
                 osd_data[8] = 0;
                 osd_data[9] = 0;
 		osd_data[10] = 0;
@@ -1504,5 +1512,3 @@ void osdMenuInit(void)
 
 
 #endif
-
-

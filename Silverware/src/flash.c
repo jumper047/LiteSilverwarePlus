@@ -27,6 +27,7 @@ extern unsigned char name_l;
 extern unsigned char crosshair_l;
 extern unsigned char display_name;
 extern unsigned char display_crosshair;
+extern unsigned char display_rssi;
 extern unsigned char low_battery;
 extern unsigned char low_rssi;
 extern unsigned char led_color;
@@ -128,7 +129,7 @@ void flash_save( void) {
     writeword(48,low_battery);
     writeword(57,name_l);
     writeword(58,crosshair_l);
-    display_flags = (display_crosshair<<1) + display_name;
+    display_flags = (display_rssi << 2) + (display_crosshair<<1) + display_name;
     writeword(59,display_flags);
     writeword(49,profileAB);
     writeword(60,low_rssi);
@@ -308,6 +309,7 @@ void flash_load( void) {
      crosshair_l = fmc_read(58);
      display_name = 0x1 & fmc_read(59);
      display_crosshair = 0x1 & (fmc_read(59)>>1);
+     display_rssi = 0x1 & (fmc_read(59)>>2);
      
      for(int i=0;i<13;i++){
        name[i] = fmc_read(62+i);
