@@ -1227,20 +1227,23 @@ void osd_setting()
                         break;
 
                     case 7:
-		      if(leds_on_ch == 7){
-			leds_on_ch = 0;
-		      } else {
-			leds_on_ch++;}
-                        break;
-
-                    case 8:
 		      if(hideosd_ch == 7){
 			hideosd_ch = 0;
 		      } else {
 			hideosd_ch++;}
                         break;
 
+                    case 8:
+#ifdef f042_1s_bayang
+		      if(leds_on_ch == 7){
+			leds_on_ch = 0;
+		      } else {
+			leds_on_ch++;}
+                        break;
+
                     case 9:
+#endif
+		      
 		      showcase = 1;
 		      currentMenu = setMenuHead;
 		      break;
@@ -1301,18 +1304,20 @@ void osd_setting()
                         break;
 
                     case 7:
-		      if(leds_on_ch == 0){
-			leds_on_ch = 7;
-		      } else {
-			leds_on_ch--;}
-                        break;
-
-                    case 8:
 		      if(hideosd_ch == 0){
 			hideosd_ch = 7;
 		      } else {
 			hideosd_ch--;}
                         break;
+			
+#ifdef f042_1s_bayang
+                    case 8:
+		      if(leds_on_ch == 0){
+			leds_on_ch = 7;
+		      } else {
+			leds_on_ch--;}
+                        break;
+#endif			
                 }
                 
                 left_flag = 0;
@@ -1329,8 +1334,11 @@ void osd_setting()
                 osd_data[6] = horizon_ch;
                 osd_data[7] = pidprofile_ch;
                 osd_data[8] = rates_ch;
-                osd_data[9] = leds_on_ch;
-		osd_data[10] = hideosd_ch;
+		osd_data[9] = hideosd_ch;
+                osd_data[10] = 0;
+#ifdef f042_1s_bayang		
+                osd_data[10] = leds_on_ch;
+#endif		
                 osd_data[11] = 0;
                 for (uint8_t i = 0; i < 11; i++)
                     osd_data[11] += osd_data[i];  
