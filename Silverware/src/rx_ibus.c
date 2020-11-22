@@ -339,7 +339,11 @@ void checkrx()
 
 					//Fulfill rssi
 #ifdef OSD_RSSI_INDICATION
+#ifndef IBUS_RSSI_CHAN_8
 					rx_rssi = (channels[13] - 1000) / 10;
+#else
+					rx_rssi = (channels[7] - 1000) / 10;
+#endif					
 					if (rx_rssi > 99) {
 					  rx_rssi = 99;
 					} else if (rx_rssi < 1) {

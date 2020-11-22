@@ -281,7 +281,13 @@ if ( frame_received )
    channels[8]  = ((data[12]|data[13]<< 8) & 0x07FF);
 
 #ifdef OSD_RSSI_INDICATION
+#ifndef SBUS_RSSI_CHAN_8
+   // rssi on channel 16
    rx_rssi = ((data[21] >> 5 | data[22] << 3) & 0x07FF) / 20.47;
+#else
+   // rssi on channel 8
+   rx_rssi = ((data[12] | data[13] << 8) & 0x07FF) / 20.47;
+#endif   
    if (rx_rssi > 99) {
      rx_rssi = 99;
    } else if (rx_rssi < 1) {
