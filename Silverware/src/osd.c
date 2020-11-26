@@ -931,7 +931,7 @@ void osd_setting()
 	  if(switch_flag){
 	    switch_flag = 0;
 	    current_index = 0;
-	    max_index = 6;
+	    max_index = 7;
 	  }
 
 	  getVertMenuIndex();
