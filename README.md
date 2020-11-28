@@ -1,17 +1,30 @@
 ﻿## LiteSilverware+ notes
 This fork contains some improvements over stock BetaFPV's LiteSilverware.
-Main goal is to make silverware usable without compiler. For now only Beta65S Lite (Brushed FC v2.0) is supported.
-Support for brushless FC will be added later.
+For now this fork supports [Lite Brushed](https://betafpv.com/products/betafpv-lite-brushed-flight-controller?variant=6634216554535) and [Lite 1S Brushless](https://betafpv.com/collections/brushless-flight-controller/products/lite-1s-brushless-flight-controller)(orange pcb) flight controllers. Support for [Lite 2S Brushless] (https://betafpv.com/collections/brushless-flight-controller/products/lite-2s-brushless-flight-controller-frsky) will be added later (or not).
+In this fork I want to keep compatibility with NFE_Silverware, so I'll not adopt latest changes from original BetaFPV (they added a lot of usability related stuff like configuration through app, but now it is nearly impossible to easily add code/commits from Silverware, like I did it with ibus)
 
 Changes against original LiteSilverware:
 1. Support for external ibus receivers (backported from NFESilverware)
-2. Username on osd.
-3. Channels can be changed via OSD menu.
-4. Rainbow effect for rgb leds, also led's color can be changed from OSD.
-5. RSSI on OSD (ibus, sbus and bayang supported).
+2. Username on osd (display -> name in OSD menu).
+3. Channels can be changed via OSD menu (channels menu).
+4. Rainbow effect for rgb leds, also led's color can be changed from OSD (only Lite Brushed FC)
+5. RSSI on OSD (ibus, sbus and bayang supported, see notes below).
 5. Some minor OSD improvements (rearranged menus, optional crosshair, etc)
 
 OSD code in it's own repository - [LiteOSD](https://github.com/jumper047/LiteOSD)
+
+### RSSI set-up
+#### Bayang (Lite Brused FC)
+Just works - just enable it in OSD menu (display -> rssi)
+
+#### IBUS
+For now this feature tested only with Cleric-K's firmware mod, read about it here - [Cleric-K/FlySkyRxFirmwareRssiMod](https://github.com/Cleric-K/FlySkyRxFirmwareRssiMod). By default LiteSilverware expects RSSI value at channel 16
+
+#### SBUS
+Set up your transmitter with this how-to - [GETTING RSSI IN PPM/SBUS CHANNEL WITH TARANIS](https://oscarliang.com/rssi-ppm-channel-taranis/). Use channel 8 on D8 and 16 on D16 protocol. Actually I have no chance to test it on real hardware, so feedback will be highly appreciated!
+
+### Acknowledges
+In addition to all those developers mentioned in the commit history;), I also want to thank [@vodka-bears](https://github.com/vodka-bears) for the script for flashing OSD - nothing would have happened without his work!
 
 _end LiteSilverware+ notes_
 
