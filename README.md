@@ -28,6 +28,8 @@ In addition to all those developers mentioned in the commit history;), I also wa
 
 _end LiteSilverware+ notes_
 
+## LiteSilverware Notes
+
 LiteSilverware project is based on the NotFastEnuf Silverware firmware, AKA [NFE_Silverware](https://github.com/NotFastEnuf/NFE_Silverware), which has a big success on the brushed whoop FC board like Alienwhoop ZER0. Several features are included in order to support brushless drones.
 
 1. Support brushless motor ESC firmware BLHeli_S.
