@@ -1,3 +1,61 @@
+# LiteSilverware+
+LiteSilverware+ consists of two parts - LiteSilverware itself and LiteOSD. Both components will be flashed separately with their own flashing tools.
+
+## FC pinout
+### Lite Brushed
+![Lite Brushed](images/brushed_1.png "Lite Brushed V2 FC front")
+![Lite Brushed](images/brushed_2.png "Lite Brushed V2 FC back")
+### Lite Brushless 1s
+![Lite Brushless 1S](images/brushless_1s.png "Lite Brushless 1S")
+
+## Flashing OSD 
+You will need: 
+- Arduino Nano (other Arduino boards are fine too, but requires some additional steps)
+- some AWG 30 wires, pins and dupont wires (last two are optional - wires can be soldered directly to Arduino without connectors)
+- soldering iron with thin tip 
+First you need to make some soldering - Arduino's GND to FC ground, D2 pin to C2D and D3 to C2CK (see pictures in pinout section). Then download flasher here - [EFM8 Arduino Programmer](https://github.com/jumper047/efm8-arduino-programmer/releases). If you are using Linux it will be easier to install it via python package manager, just open your terminal and type `python -m pip install git+https://github.com/jumper047/efm8-arduino-programmer.git` and run it with command `efm8_programmer`. Also download firmware for your FC's OSD chip - [LiteOSD releases](https://github.com/jumper047/LiteOSD/releases). Connect Arduino to PC.
+Run EFM8 Programmer, select Arduino's COM port and press "Flash Arduino" button. 
+
+![EFM8 Programmer](images/efm_programmer_1.png)
+
+Choose your board type, press "ok" and wait until "Flashing performed successfully" popup appears. Now your Arduino is able to flash OSD chip. Connect battery to FC. First backup your existing firmware - press "Read" button and select file to save firmware. Then press the "Flash" button, and select the firmware file to flash. Wait until popup. That's all - now you can desolder wires (or just cutoff them in case you'll need to flash it again later - it is much easier to solder to wire than to the spot on board)
+
+## Flashing Silverware
+Actually the process is pretty same as usual Silverware flashing except you don't need to change config.h and compile firmware, except Lite Brushed FC - it can be flashed with USB cable only. Process will be described in the next chapter.
+
+### Flashing with STLink USB adapter
+Hardware needed:
+
+- STLink V2 Usb debug adapter
+- SH 1.0mm 4 pin connector (Lite Brushed & Lite Brushless 2S)
+- Soldering iron with thin tip
+
+Download and install [STM32Cube programmer](https://www.st.com/en/development-tools/stm32cubeprog.html). Download FC firmware - [LiteSilverware releases ](https://github.com/jumper047/LiteSilverwarePlus/releases). Connect FC to STLink adapter - GND to GND, SWDIO to SWDIO and SWCLK to SWCLK. Lite Brushed and Lite Brushless 2S have SH 1.0 mm socket (can be found at Aliexpress or, maybe, some local stores - I found mine in a local drone shop), but Lite Brushless 1S do not have it - only a pad for soldering. 
+
+!["STM32Cube"](images/stm32cube_1.png "Connecting to USB dongle")
+
+Launch STM32Cube, plug STLink in PC, connect battery to FC and press "Connect"(1) in STM32Cube. Then press the download button (2).
+
+!["STM32Cube"](images/stm32cube_2.png "Flashing FC")
+
+Press "Browse"(3), choose firmware downloaded earlier, check "Verify" checkbox(4) (optional, just to be sure everything goes right during flashing), and finally press "Start Programming"(5). Wait until popup window indicates processes final.
+
+!["STM32Cube"](images/stm32cube_3.png "Finally")
+
+### Flashing via USB (Lite Brushed only)
+
+If you want to flash Lite Brushed via USB (probably you want, it is easier way), you need [DfuSe software](https://www.st.com/en/development-tools/stsw-stm32080.html), download and install it. Then download appropriate [LiteSilverware firmware](https://github.com/jumper047/LiteSilverwarePlus/releases), choose from .dfu extensions. If you have stock firmware on your Lite Brushed FC, shorten DFU pads with screwdriver or something similar (see pictures in FC pinouts section), and connect FC to your PC via USB cable. You can stop shorting pads after 2-3 seconds. Now run DFUseDemo software. If everything goes right way, you'll see something like that:
+
+![DFUse Demo](images/dfuse_1.png "DFUse Demo")
+
+Now press button "Choose" (1), select .dfu file and then press "Upgrade"(2) button. Wait until "Upgrade successful" appears on the progress bar.
+
+![DFUse completed](images/dfuse_2.png "Flashing completed")
+
+Check [this thread](https://www.rcgroups.com/forums/showpost.php?p=44113693&postcount=21) if you run into some issue during this procedure (or create a new issue in this repo).
+
+_LiteSilverware+ instructions ends here_
+
 # Install and Flashing Instructions
 The flashing procedure consists of the "unlocking" of the board, as it is read/write protected originally, and flashing the actual firmware. A ST-LINK v2 is used, either clone, original, or Discovery/Nucleo board.
 
