@@ -1,6 +1,6 @@
 ﻿## LiteSilverware+ notes
 This fork contains some improvements over stock BetaFPV's LiteSilverware.
-For now this fork supports [Lite Brushed](https://betafpv.com/products/betafpv-lite-brushed-flight-controller?variant=6634216554535) and [Lite 1S Brushless](https://betafpv.com/collections/brushless-flight-controller/products/lite-1s-brushless-flight-controller)(orange pcb) flight controllers. Support for [Lite 2S Brushless] (https://betafpv.com/collections/brushless-flight-controller/products/lite-2s-brushless-flight-controller-frsky) will be added later (or not).
+For now this fork supports [Lite Brushed](https://betafpv.com/products/betafpv-lite-brushed-flight-controller?variant=6634216554535) and [Lite 1S Brushless](https://betafpv.com/collections/brushless-flight-controller/products/lite-1s-brushless-flight-controller)(orange pcb) flight controllers. Support for [Lite 2S Brushless](https://betafpv.com/collections/brushless-flight-controller/products/lite-2s-brushless-flight-controller-frsky) will be added later (or not).
 In this fork I want to keep compatibility with NFE_Silverware, so I'll not adopt latest changes from original BetaFPV (they added a lot of usability related stuff like configuration through app, but now it is nearly impossible to easily add code/commits from Silverware, like I did it with ibus)
 
 Changes against original LiteSilverware:
