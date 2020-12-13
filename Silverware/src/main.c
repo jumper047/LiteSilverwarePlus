@@ -377,7 +377,7 @@ aux[CH_AUX1] = 1;
     flash_hard_coded_pid_identifier();
 
 // load flash saved variables
-    flash_load( );
+    flash_load();
 #endif
 
 #ifdef RX_SBUS_DSMX_BAYANG_SWITCH
