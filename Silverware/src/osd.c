@@ -1,9 +1,11 @@
+#include "sixaxis.h"
 #include "osd.h"
 #include "drv_serial.h"
 #include "drv_time.h"
 #include "math.h"
 #include <stdlib.h>
 //#include <name.h>
+
 
 #define AETR  ((-0.6f > rx[Yaw]) && (0.3f < rx[Throttle]) && (0.7f > rx[Throttle]) && (0.6f < rx[Pitch]) && (-0.3f < rx[Roll]) && (0.3f > rx[Roll]))
 #define toy_AETR  ((-0.6f > rx[Yaw]) && (0.3f > rx[Throttle]) && (0.6f < rx[Pitch]) && (-0.3f < rx[Roll]) && (0.3f > rx[Roll]))
@@ -487,9 +489,12 @@ void osd_setting()
                         showcase = 2;
                         break;
                     case 1:
-                        /* currentMenu = motorMenuHead; */
-                        showcase = 3;
+		      #ifdef f042_1s_bayang
 			switch_flag = 1;
+		      #else
+                        currentMenu = motorMenuHead;
+		      #endif
+                        showcase = 3;
                         break; 
                     case 2:
                         currentMenu = receiverMenuHead;
@@ -660,7 +665,7 @@ void osd_setting()
 	  if(switch_flag){
 	    switch_flag = 0;
 	    current_index = 0;
-	    max_index = 5;
+	    max_index = 6;
 	  }
 
             getVertMenuIndex();
@@ -690,6 +695,10 @@ void osd_setting()
 		  }
                 else if(current_index ==4){
                     T8SG_config =!T8SG_config;
+		}
+		else if(current_index == 5){
+		  gyro_cal();
+		  acc_cal();
 		}
                 else{
                     showcase = 1;
@@ -741,6 +750,10 @@ void osd_setting()
                     currentMenu->uvalue = !currentMenu->uvalue;
                     motorDir[currentMenu->index] = currentMenu->uvalue;
                 }
+		else if(currentMenu->index == 4){
+		  gyro_cal();
+		  acc_cal();
+		}
                 else{
                     showcase = 1;
                     motorMenu = motorMenuHead;
@@ -1480,7 +1493,7 @@ void osdMenuInit(void)
     pidMenu = createMenu(9,1);
     pidMenuHead = pidMenu;
     
-    motorMenu = createMenu(5,2);
+    motorMenu = createMenu(6,2);
     motorMenuHead = motorMenu;
     
     receiverMenu = createMenu(0,3);
