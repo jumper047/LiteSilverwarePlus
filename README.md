@@ -4,14 +4,17 @@ For now this fork supports [Lite Brushed](https://betafpv.com/products/betafpv-l
 In this fork I want to keep compatibility with NFE_Silverware, so I'll not adopt latest changes from original BetaFPV (they added a lot of usability related stuff like configuration through app, but now it is nearly impossible to easily add code/commits from Silverware, like I did it with ibus)
 
 Changes against original LiteSilverware:
-1. Support for external ibus receivers (backported from NFESilverware)
-2. Username on osd (display -> name in OSD menu).
-3. Channels can be changed via OSD menu (channels menu).
-4. Rainbow effect for rgb leds, also led's color can be changed from OSD (only Lite Brushed FC)
-5. RSSI on OSD (ibus, sbus and bayang supported, see notes below).
-5. Some minor OSD improvements (rearranged menus, optional crosshair, etc)
+
+- Support for external ibus receivers (backported from NFESilverware)
+- Username on osd (display -> name in OSD menu).
+- Channels can be changed via OSD menu (channels menu).
+- Rainbow effect for rgb leds, also led's color can be changed from OSD (only Lite Brushed FC)
+- RSSI on OSD (ibus, sbus and bayang supported, see notes below).
+- Some minor OSD improvements (rearranged menus, optional crosshair, etc)
 
 OSD code in it's own repository - [LiteOSD](https://github.com/jumper047/LiteOSD)
+
+Installation instructions can be found in [INSTALL.MD](INSTALL.md)
 
 ### RSSI set-up
 #### Bayang (Lite Brused FC)
