@@ -172,6 +172,8 @@
 // *************your rssi drops below threshold
 //#define OSD_RSSI_WARNING 20
 
+// *************if uncommented channels settings above will be ignored 
+// *************and channels defined via osd will be used instead
 #define OSD_CHANNELS_SETTINGS
 
 //**********************************************************************************************************************
