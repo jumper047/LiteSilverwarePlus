@@ -85,7 +85,7 @@
 // *************select only one
 
 //#define RX_SBUS
-#define RX_IBUS
+//#define RX_IBUS
 //#define RX_CRSF                                           //Requires tbs firmware v2.88 or newer for failsafe to operate properly
 //#define RX_DSMX_2048
 //#define RX_DSM2_1024
@@ -94,10 +94,10 @@
 //#define RX_BAYANG_PROTOCOL_BLE_BEACON
 //#define RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
 #ifdef f042_1s_bayang
-//    #define RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
+    #define RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
     #define Lite_BrushedRX
 #else
-    #define RX_SBUS_DSMX_BAYANG_SWITCH
+//    #define RX_SBUS_DSMX_BAYANG_SWITCH
     #define Lite_BrushlessRX
 #endif
 
