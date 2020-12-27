@@ -750,8 +750,8 @@ void checkrx(void)
           packetrx = 0;
           secondtimer = gettime();
 #ifdef OSD_RSSI_INDICATION
-	  // assuming (from telemetry code above) 255 is 100% strength
-	  rx_rssi = 100 * (packetpersecond / 2) / 255;
+	  // seems like packetpersecond values lies in range 0..200
+	  rx_rssi = packetpersecond / 2;
 	  if (rx_rssi > 99) {
 	    rx_rssi = 99;
 	  } else if (rx_rssi < 1) {
