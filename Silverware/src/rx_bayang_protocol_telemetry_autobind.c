@@ -89,6 +89,7 @@ extern unsigned char chan[8];
 extern unsigned char levelmode_ch;
 extern unsigned char racemode_ch;
 extern unsigned char horizon_ch;
+extern unsigned char arming_ch;
 #endif
 
 char lasttrim[4];
