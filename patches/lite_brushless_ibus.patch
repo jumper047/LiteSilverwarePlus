@@ -1,0 +1,25 @@
+diff --git a/Silverware/src/config.h b/Silverware/src/config.h
+index a1aff8c..a2ec78a 100644
+--- a/Silverware/src/config.h
++++ b/Silverware/src/config.h
+@@ -19,9 +19,9 @@
+ //#define Lite_BrushlessRX
+ //#define Lite_BrushedRX
+ 
+-//#define f042_1s_bl
++#define f042_1s_bl
+ //#define f042_2s_bl
+-#define f042_1s_bayang
++//#define f042_1s_bayang
+ 
+ //#define ENABLE_BARO
+ 
+@@ -85,7 +85,7 @@
+ // *************select only one
+ 
+ //#define RX_SBUS
+-//#define RX_IBUS
++#define RX_IBUS
+ //#define RX_CRSF                                           //Requires tbs firmware v2.88 or newer for failsafe to operate properly
+ //#define RX_DSMX_2048
+ //#define RX_DSM2_1024

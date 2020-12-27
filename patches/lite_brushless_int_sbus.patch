@@ -1,0 +1,25 @@
+diff --git a/Silverware/src/config.h b/Silverware/src/config.h
+index a1aff8c..6900d81 100644
+--- a/Silverware/src/config.h
++++ b/Silverware/src/config.h
+@@ -19,9 +19,9 @@
+ //#define Lite_BrushlessRX
+ //#define Lite_BrushedRX
+ 
+-//#define f042_1s_bl
++#define f042_1s_bl
+ //#define f042_2s_bl
+-#define f042_1s_bayang
++//#define f042_1s_bayang
+ 
+ //#define ENABLE_BARO
+ 
+@@ -97,7 +97,7 @@
+     #define RX_BAYANG_PROTOCOL_TELEMETRY_AUTOBIND
+     #define Lite_BrushedRX
+ #else
+-//    #define RX_SBUS_DSMX_BAYANG_SWITCH
++    #define RX_SBUS_DSMX_BAYANG_SWITCH
+     #define Lite_BrushlessRX
+ #endif
+ 

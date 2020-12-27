@@ -26,6 +26,9 @@ For now this feature tested only with Cleric-K's firmware mod, read about it her
 #### SBUS
 Set up your transmitter with this how-to - [GETTING RSSI IN PPM/SBUS CHANNEL WITH TARANIS](https://oscarliang.com/rssi-ppm-channel-taranis/). Use channel 8 on D8 and 16 on D16 protocol. Actually I have no chance to test it on real hardware, so feedback will be highly appreciated!
 
+### Building releases
+Instead of splitting the repository into several branches for each board variant I decided to try to keep all code in one branch and store changes between different releases in patches. To build binary for certain FC/receiver combination you need to apply patch from patches/ directory.
+
 ### Acknowledges
 In addition to all those developers mentioned in the commit history;), I also want to thank [@vodka-bears](https://github.com/vodka-bears) for the script for flashing OSD - nothing would have happened without his work!
 
