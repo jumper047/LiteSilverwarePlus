@@ -61,6 +61,10 @@ int bind_safety = 0;
 int rx_bind_enable = 0;
 int sbus_dsmx_flag = 0; 
 
+#ifdef OSD_RSSI_INDICATION
+extern int rx_rssi;
+#endif
+
 extern unsigned char tx_config;
 extern unsigned char mode_config;
 extern unsigned char showcase;
@@ -1270,6 +1274,22 @@ if ( frame_received )
     Tempch[1] = sbus_channels[1];
     Tempch[2] = sbus_channels[2];
     Tempch[3] = sbus_channels[3];
+
+#ifdef OSD_RSSI_INDICATION
+#ifndef SBUS_RSSI_CHAN_8
+    // rssi on channel 16
+    rx_rssi = ((data[21] >> 5 | data[22] << 3) & 0x07FF) / 20.47;
+#else
+    // rssi on channel 8
+    rx_rssi = ((data[12] | data[13] << 8) & 0x07FF) / 20.47;
+#endif   
+    if (rx_rssi > 99) {
+      rx_rssi = 99;
+    } else if (rx_rssi < 1) {
+      rx_rssi = 1;
+    }
+#endif
+
     if ( rx_state == 0)
     {
      // wait for valid sbus signal
