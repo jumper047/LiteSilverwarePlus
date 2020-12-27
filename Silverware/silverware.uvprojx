@@ -483,14 +483,14 @@
               <FilePath>.\src\gesture_detect.c</FilePath>
             </File>
             <File>
-              <FileName>rx_bayang_protocol.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\src\rx_bayang_protocol.c</FilePath>
-            </File>
-            <File>
               <FileName>rx_bayang_protocol_telemetry_autobind.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\rx_bayang_protocol_telemetry_autobind.c</FilePath>
+            </File>
+            <File>
+              <FileName>rx_bayang_protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\rx_bayang_protocol.c</FilePath>
             </File>
             <File>
               <FileName>rx_bayang_protocol_ble.c</FileName>
